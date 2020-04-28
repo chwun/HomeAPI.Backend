@@ -1,0 +1,10 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project Sdk="Microsoft.NET.Sdk.Web">
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <UserSecretsId>0ea2effb-5d8f-4ec0-a788-d1be3a6b2289</UserSecretsId>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="microsoft.visualstudio.web.codegeneration.design" Version="3.1.2" />
+  </ItemGroup>
+</Project>
