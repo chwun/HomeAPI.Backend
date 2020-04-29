@@ -1,4 +1,6 @@
+using System.Collections.Generic;
 using System.Threading.Tasks;
+using HomeAPI.Backend.Models.Lighting;
 using HomeAPI.Backend.Providers;
 using Microsoft.AspNetCore.Mvc;
 
@@ -21,12 +23,10 @@ namespace HomeAPI.Backend.Controllers
 			return "Hello " + name;
 		}
 
-		[HttpGet("availablelights")]
-		public async Task<ActionResult<string>> GetAvailableLightsAsync()
+		[HttpGet("lights")]
+		public async Task<IEnumerable<Light>> GetAllLights()
 		{
-			string result = await hueProvider.GetAvailableLightsAsync();
-
-			return result;
+			return await hueProvider.GetAllLightsAsync();
 		}
 	}
 }

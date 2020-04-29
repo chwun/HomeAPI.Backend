@@ -1,7 +1,12 @@
+using System.Collections.Generic;
+using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
+using HomeAPI.Backend.Models.Lighting;
+using HomeAPI.Backend.Models.Lighting.Hue;
 using HomeAPI.Backend.Options;
 using Microsoft.Extensions.Options;
+using Newtonsoft.Json;
 
 namespace HomeAPI.Backend.Providers
 {
@@ -25,11 +30,22 @@ namespace HomeAPI.Backend.Providers
 			apiUrl += $"/api/{options.UserKey}";
 		}
 
-		public Task<string> GetAvailableLightsAsync()
+		public async Task<List<Light>> GetAllLightsAsync()
 		{
 			string url = $"{apiUrl}/lights";
-			
-			return httpClient.GetStringAsync(url);
+
+			var jsonText = await httpClient.GetStringAsync(url);
+			var lightsDict = (Dictionary<int, HueLight>)JsonConvert.DeserializeObject(jsonText, typeof(Dictionary<int, HueLight>));
+
+			List<Light> result = new List<Light>();
+
+			foreach (KeyValuePair<int, HueLight> keyValue in lightsDict)
+			{
+				Light light = keyValue.Value.ToLight(keyValue.Key);
+				result.Add(light);
+			}
+
+			return result.OrderBy(x => x.Id).ToList();
 		}
 	}
 }
