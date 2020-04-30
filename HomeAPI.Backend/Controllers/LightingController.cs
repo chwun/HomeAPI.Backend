@@ -30,7 +30,7 @@ namespace HomeAPI.Backend.Controllers
 				return NoContent();
 			}
 
-			return lights;
+			return Ok(lights);
 		}
 	}
 }
