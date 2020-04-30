@@ -22,4 +22,9 @@ jobs:
     - name: Build
       run: dotnet build HomeAPI.Backend/HomeAPI.Backend.csproj
     - name: Test
-      run: dotnet test --no-restore --verbosity normal HomeAPI.Backend.Tests/HomeAPI.Backend.Tests.csproj
+      run: dotnet test --configuration Debug /p:CollectCoverage=true /p:CoverletOutput=TestResults/ /p:CoverletOutputFormat=lcov HomeAPI.Backend.Tests/HomeAPI.Backend.Tests.csproj
+    - name: Publish coverage report to coveralls.io
+      uses: coverallsapp/github-action@master
+      with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+        path-to-lcov: HomeAPI.Backend.Tests/TestResults/coverage.info 

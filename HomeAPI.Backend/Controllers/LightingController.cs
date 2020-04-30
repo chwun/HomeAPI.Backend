@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using HomeAPI.Backend.Models.Lighting;
 using HomeAPI.Backend.Providers;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace HomeAPI.Backend.Controllers
@@ -17,16 +18,19 @@ namespace HomeAPI.Backend.Controllers
 			this.hueProvider = hueProvider;
 		}
 
-		[HttpGet("test")]
-		public ActionResult<string> Test([FromQuery]string name)
-		{
-			return "Hello " + name;
-		}
-
 		[HttpGet("lights")]
-		public async Task<IEnumerable<Light>> GetAllLights()
+		[ProducesResponseType(StatusCodes.Status204NoContent)]
+		[ProducesResponseType(StatusCodes.Status200OK)]
+		public async Task<ActionResult<List<Light>>> GetAllLights()
 		{
-			return await hueProvider.GetAllLightsAsync();
+			var lights = await hueProvider.GetAllLightsAsync();
+
+			if (lights == null || lights.Count == 0)
+			{
+				return NoContent();
+			}
+
+			return lights;
 		}
 	}
 }
