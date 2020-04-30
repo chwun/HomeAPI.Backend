@@ -22,4 +22,4 @@ jobs:
     - name: Build
       run: dotnet build .\HomeAPI.Backend\HomeAPI.Backend.csproj
     - name: Test
-      #run: dotnet test --no-restore --verbosity normal
+      run: dotnet test --no-restore --verbosity normal .\HomeAPI.Backend.Tests\HomeAPI.Backend.Tests.csproj
