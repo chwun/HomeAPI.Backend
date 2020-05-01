@@ -28,11 +28,11 @@ namespace HomeAPI.Backend.Tests.Models.Lighting.Hue
 			Assert.Equal(5, result.Id);
 			Assert.Equal("Light No. 5", result.Name);
 			Assert.Equal(LightType.HueDimmableLight, result.Type);
-			Assert.Equal(true, result.State.On);
+			Assert.True(result.State.On);
 			Assert.Equal(100, result.State.Brightness);
 			Assert.Equal(10, result.State.ColorTemperature);
 			Assert.Equal(50, result.State.Saturation);
-			Assert.Equal(true, result.State.Reachable);
+			Assert.True(result.State.Reachable);
 		}
 	}
 }
