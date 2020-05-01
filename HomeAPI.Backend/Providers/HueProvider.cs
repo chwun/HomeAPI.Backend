@@ -12,14 +12,14 @@ namespace HomeAPI.Backend.Providers
 {
 	public class HueProvider : IHueProvider
 	{
+		private readonly IHttpClientFactory clientFactory;
 		private readonly HueOptions options;
-		private readonly HttpClient httpClient;
 		private readonly string apiUrl;
 
-		public HueProvider(IOptionsMonitor<HueOptions> optionsAccessor)
+		public HueProvider(IHttpClientFactory clientFactory, IOptionsMonitor<HueOptions> optionsAccessor)
 		{
+			this.clientFactory = clientFactory;
 			options = optionsAccessor.CurrentValue;
-			httpClient = new HttpClient();
 
 			apiUrl = $"http://{options.BridgeIP}";
 			if (options.BridgePort > 0)
@@ -34,6 +34,7 @@ namespace HomeAPI.Backend.Providers
 		{
 			string url = $"{apiUrl}/lights";
 
+			var httpClient = clientFactory.CreateClient();
 			var jsonText = await httpClient.GetStringAsync(url);
 			var lightsDict = (Dictionary<int, HueLight>)JsonConvert.DeserializeObject(jsonText, typeof(Dictionary<int, HueLight>));
 
