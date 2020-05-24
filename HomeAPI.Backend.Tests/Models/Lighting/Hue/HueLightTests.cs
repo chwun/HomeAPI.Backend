@@ -19,6 +19,7 @@ namespace HomeAPI.Backend.Tests.Models.Lighting.Hue
 					Bri = 100,
 					Ct = 10,
 					Sat = 50,
+					Hue = 80,
 					Reachable = true
 				}
 			};
@@ -32,6 +33,7 @@ namespace HomeAPI.Backend.Tests.Models.Lighting.Hue
 			Assert.Equal(100, result.State.Brightness);
 			Assert.Equal(10, result.State.ColorTemperature);
 			Assert.Equal(50, result.State.Saturation);
+			Assert.Equal(80, result.State.Hue);
 			Assert.True(result.State.Reachable);
 		}
 	}
