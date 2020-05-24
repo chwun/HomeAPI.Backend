@@ -2,7 +2,7 @@ using Newtonsoft.Json;
 
 namespace HomeAPI.Backend.Models.Lighting.Hue
 {
-	public class HueLight : ILightFactory
+	public class HueLight
 	{
 		[JsonProperty("name")]
 		public string Name { get; set; }
@@ -36,6 +36,7 @@ namespace HomeAPI.Backend.Models.Lighting.Hue
 					On = this.State.On,
 					Brightness = this.State.Bri,
 					Saturation = this.State.Sat,
+					Hue = this.State.Hue,
 					ColorTemperature = this.State.Ct,
 					Reachable = this.State.Reachable
 				}

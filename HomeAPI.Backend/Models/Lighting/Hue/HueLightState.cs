@@ -13,6 +13,9 @@ namespace HomeAPI.Backend.Models.Lighting.Hue
 		[JsonProperty("sat")]
 		public int Sat { get; set; }
 
+		[JsonProperty("hue")]
+		public int Hue { get; set; }
+
 		[JsonProperty("ct")]
 		public int Ct { get; set; }
 

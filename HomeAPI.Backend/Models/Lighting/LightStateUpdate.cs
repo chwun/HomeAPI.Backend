@@ -1,6 +1,6 @@
 namespace HomeAPI.Backend.Models.Lighting
 {
-	public class LightState
+	public class LightStateUpdate
 	{
 		public bool On { get; set; }
 
@@ -11,7 +11,5 @@ namespace HomeAPI.Backend.Models.Lighting
 		public int Hue { get; set; }
 
 		public int ColorTemperature { get; set; }
-
-		public bool Reachable { get; set; }
 	}
 }
