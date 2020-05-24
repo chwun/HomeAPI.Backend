@@ -6,13 +6,17 @@ namespace HomeAPI.Backend.Tests.Models.Lighting.Hue
 {
 	public class HueLightTests
 	{
-		[Fact]
-		public void ToLight_Dimmable()
+		[Theory]
+		[InlineData("Dimmable Light", LightType.HueDimmableLight)]
+		[InlineData("Extended Color Light", LightType.HueExtendedColorLight)]
+		[InlineData("Color Temperature Light", LightType.HueColorTemperatureLight)]
+		[InlineData("Unknown Light Type", LightType.Undefined)]
+		public void ToLight(string lightTypeName, LightType expectedLightType)
 		{
 			var hueLight = new HueLight()
 			{
 				Name = "Light No. 5",
-				Type = "Dimmable light",
+				Type = lightTypeName,
 				State = new HueLightState()
 				{
 					On = true,
@@ -28,7 +32,7 @@ namespace HomeAPI.Backend.Tests.Models.Lighting.Hue
 
 			Assert.Equal(5, result.Id);
 			Assert.Equal("Light No. 5", result.Name);
-			Assert.Equal(LightType.HueDimmableLight, result.Type);
+			Assert.Equal(expectedLightType, result.Type);
 			Assert.True(result.State.On);
 			Assert.Equal(100, result.State.Brightness);
 			Assert.Equal(10, result.State.ColorTemperature);

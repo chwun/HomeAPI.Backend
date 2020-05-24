@@ -37,7 +37,7 @@ namespace HomeAPI.Backend.Tests.Models.Lighting.Hue
 			Assert.Equal(90, result.Brightness);
 		}
 
-				[Fact]
+		[Fact]
 		public void CreateFromLightState_ExtendedColor()
 		{
 			IHueLightStateUpdateFactory lightStateUpdateFactory = new HueLightStateUpdateFactory();
@@ -58,6 +58,27 @@ namespace HomeAPI.Backend.Tests.Models.Lighting.Hue
 			Assert.Equal(55, result.ColorTemperature);
 			Assert.Equal(27, result.Saturation);
 			Assert.Equal(8000, result.Hue);
+		}
+
+		[Fact]
+		public void CreateFromLightState_ColorTemperature()
+		{
+			IHueLightStateUpdateFactory lightStateUpdateFactory = new HueLightStateUpdateFactory();
+
+			var lightStateUpdate = new LightStateUpdate()
+			{
+				On = true,
+				Brightness = 90,
+				ColorTemperature = 55,
+				Saturation = 27,
+				Hue = 8000
+			};
+
+			var result = lightStateUpdateFactory.CreateFromLightState(LightType.HueColorTemperatureLight, lightStateUpdate) as HueLightStateUpdateColorTemperature;
+
+			Assert.True(result.On);
+			Assert.Equal(90, result.Brightness);
+			Assert.Equal(55, result.ColorTemperature);
 		}
 	}
 }
