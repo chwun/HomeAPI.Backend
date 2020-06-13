@@ -11,5 +11,7 @@ namespace HomeAPI.Backend.Providers
 		Task<Light> GetLightByIdAsync(int lightId);
 
 		Task<bool> SetLightStateAsync(int lightId, LightStateUpdate stateUpdate);
+
+		Task<bool> ApplyLightSceneAsync(LightScene scene);
 	}
 }

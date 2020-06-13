@@ -108,5 +108,26 @@ namespace HomeAPI.Backend.Providers
 
 			return success;
 		}
+
+		public async Task<bool> ApplyLightSceneAsync(LightScene scene)
+		{
+			bool success = true;
+
+			try
+			{
+				var lightStateUpdates = JsonConvert.DeserializeObject<Dictionary<int, LightStateUpdate>>(scene.Data);
+
+				foreach (var keyValue in lightStateUpdates)
+				{
+					success &= await SetLightStateAsync(keyValue.Key, keyValue.Value);
+				}
+			}
+			catch (Exception)
+			{
+				success = false;
+			}
+
+			return success;
+		}
 	}
 }
