@@ -1,4 +1,7 @@
+using System;
 using System.Diagnostics.CodeAnalysis;
+using System.IO;
+using System.Runtime.InteropServices;
 using HomeAPI.Backend.Data;
 using HomeAPI.Backend.Data.Lighting;
 using HomeAPI.Backend.Models.Lighting;
@@ -7,6 +10,7 @@ using HomeAPI.Backend.Options;
 using HomeAPI.Backend.Providers;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -27,7 +31,7 @@ namespace HomeAPI.Backend
 		// This method gets called by the runtime. Use this method to add services to the container.
 		public void ConfigureServices(IServiceCollection services)
 		{
-			services.AddDbContext<DataContext>(options => options.UseSqlite(Configuration.GetConnectionString("Data")));
+			AddDbContext(services);
 
 			services.AddScoped<IAsyncRepository<LightScene>, LightSceneRepository>();
 			services.AddTransient<IHueProvider, HueProvider>();
@@ -44,6 +48,13 @@ namespace HomeAPI.Backend
 		// This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
 		public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
 		{
+			app.UseForwardedHeaders(new ForwardedHeadersOptions
+			{
+				ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
+			});
+
+			app.UseAuthentication();
+
 			if (env.IsDevelopment())
 			{
 				app.UseDeveloperExceptionPage();
@@ -59,6 +70,27 @@ namespace HomeAPI.Backend
 			{
 				endpoints.MapControllers();
 			});
+		}
+
+		private void AddDbContext(IServiceCollection services)
+		{
+			string dbPath = Path.Combine(Environment.GetEnvironmentVariable(RuntimeInformation.IsOSPlatform(OSPlatform.Windows) ? "LocalAppData" : "HOME"), "HomeAPI_Data");
+			if (!dbPath.EndsWith(Path.DirectorySeparatorChar) && !dbPath.EndsWith(Path.AltDirectorySeparatorChar))
+			{
+				dbPath += Path.DirectorySeparatorChar;
+			}
+
+			Console.WriteLine($"DB path: {dbPath}");
+
+			if (!Directory.Exists(dbPath))
+			{
+				Directory.CreateDirectory(dbPath);
+				Console.WriteLine("DB directory created");
+			}
+
+			string connectionString = string.Format(Configuration.GetConnectionString("Data"), dbPath);
+
+			services.AddDbContext<DataContext>(options => options.UseSqlite(connectionString));
 		}
 	}
 }
