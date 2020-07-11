@@ -90,17 +90,30 @@ namespace HomeAPI.Backend.Providers
 			{
 				var light = await GetLightByIdAsync(lightId);
 
-				var hueLightStateUpdate = lightStateUpdateFactory.CreateFromLightState(light.Type, stateUpdate);
-				var json = JsonConvert.SerializeObject(hueLightStateUpdate);
-
 				var httpClient = clientFactory.CreateClient();
-				var response = await httpClient.PutAsync(url, new StringContent(json));
 
-				var responseJson = await response.Content.ReadAsStringAsync();
+				// first send only on/off state to Hue bridge, because otherwise Hue will respond with error:
+				var hueOnOffLightStateUpdate = lightStateUpdateFactory.CreateOnOffLightStateUpdateFromLightState(stateUpdate);
+				var jsonOnOff = JsonConvert.SerializeObject(hueOnOffLightStateUpdate);
+				await httpClient.PutAsync(url, new StringContent(jsonOnOff));
 
-				var updateResults = JsonConvert.DeserializeObject<HueLightStateUpdateResult[]>(responseJson);
+				// only proceed if light is switched on, because otherwise Hue will respond with error:
+				if (hueOnOffLightStateUpdate.On)
+				{
+					var hueLightStateUpdate = lightStateUpdateFactory.CreateFromLightState(light.Type, stateUpdate);
+					var json = JsonConvert.SerializeObject(hueLightStateUpdate);
+					var response = await httpClient.PutAsync(url, new StringContent(json));
 
-				success = (updateResults.Length > 0) ? (updateResults[0].Success != null) : false;
+					var responseJson = await response.Content.ReadAsStringAsync();
+
+					var updateResults = JsonConvert.DeserializeObject<HueLightStateUpdateResult[]>(responseJson);
+
+					success = (updateResults.Length > 0) ? (updateResults[0].Success != null) : false;
+				}
+				else
+				{
+					success = true;
+				}
 			}
 			catch (Exception)
 			{

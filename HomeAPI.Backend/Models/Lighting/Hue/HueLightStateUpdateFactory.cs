@@ -29,6 +29,16 @@ namespace HomeAPI.Backend.Models.Lighting.Hue
 			};
 		}
 
+		public HueOnOffLightStateUpdate CreateOnOffLightStateUpdateFromLightState(LightStateUpdate stateUpdate)
+		{
+			if (stateUpdate == null)
+			{
+				return null;
+			}
+
+			return new HueOnOffLightStateUpdate() { On = stateUpdate.On };
+		}
+
 		private HueLightStateUpdateDimmable CreateDimmableLightStateUpdate(LightStateUpdate stateUpdate)
 		{
 			return new HueLightStateUpdateDimmable()

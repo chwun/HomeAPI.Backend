@@ -12,5 +12,7 @@ namespace HomeAPI.Backend.Models.Lighting.Hue
 		/// <param name="stateUpdate">light state update</param>
 		/// <returns>new instance of HueLightStateUpdate</returns>
 		HueLightStateUpdate CreateFromLightState(LightType lightType, LightStateUpdate stateUpdate);
+
+		HueOnOffLightStateUpdate CreateOnOffLightStateUpdateFromLightState(LightStateUpdate stateUpdate);
 	}
 }

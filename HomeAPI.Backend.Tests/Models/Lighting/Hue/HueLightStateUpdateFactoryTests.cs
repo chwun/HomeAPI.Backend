@@ -6,6 +6,8 @@ namespace HomeAPI.Backend.Tests.Models.Lighting.Hue
 {
 	public class HueLightStateUpdateFactoryTests
 	{
+		#region CreateFromLightState
+
 		[Fact]
 		public void CreateFromLightState_StateNull()
 		{
@@ -80,5 +82,76 @@ namespace HomeAPI.Backend.Tests.Models.Lighting.Hue
 			Assert.Equal(90, result.Brightness);
 			Assert.Equal(55, result.ColorTemperature);
 		}
+
+		#endregion
+
+		#region CreateOnOffLightStateUpdateFromLightState
+
+		[Fact]
+		public void CreateOnOffLightStateUpdateFromLightState_StateNull()
+		{
+			IHueLightStateUpdateFactory lightStateUpdateFactory = new HueLightStateUpdateFactory();
+			LightStateUpdate lightStateUpdate = null;
+
+			var result = lightStateUpdateFactory.CreateOnOffLightStateUpdateFromLightState(lightStateUpdate);
+
+			Assert.Null(result);
+		}
+
+		[Fact]
+		public void CreateOnOffLightStateUpdateFromLightState_Dimmable()
+		{
+			IHueLightStateUpdateFactory lightStateUpdateFactory = new HueLightStateUpdateFactory();
+			var lightStateUpdate = new LightStateUpdate()
+			{
+				On = true,
+				Brightness = 90,
+				ColorTemperature = 55,
+				Saturation = 27,
+				Hue = 8000
+			};
+
+			var result = lightStateUpdateFactory.CreateOnOffLightStateUpdateFromLightState(lightStateUpdate);
+
+			Assert.True(result.On);
+		}
+
+		[Fact]
+		public void CreateOnOffLightStateUpdateFromLightState_ExtendedColor()
+		{
+			IHueLightStateUpdateFactory lightStateUpdateFactory = new HueLightStateUpdateFactory();
+			var lightStateUpdate = new LightStateUpdate()
+			{
+				On = true,
+				Brightness = 90,
+				ColorTemperature = 55,
+				Saturation = 27,
+				Hue = 8000
+			};
+
+			var result = lightStateUpdateFactory.CreateOnOffLightStateUpdateFromLightState(lightStateUpdate);
+
+			Assert.True(result.On);
+		}
+
+		[Fact]
+		public void CreateOnOffLightStateUpdateFromLightState_ColorTemperature()
+		{
+			IHueLightStateUpdateFactory lightStateUpdateFactory = new HueLightStateUpdateFactory();
+			var lightStateUpdate = new LightStateUpdate()
+			{
+				On = true,
+				Brightness = 90,
+				ColorTemperature = 55,
+				Saturation = 27,
+				Hue = 8000
+			};
+
+			var result = lightStateUpdateFactory.CreateOnOffLightStateUpdateFromLightState(lightStateUpdate);
+
+			Assert.True(result.On);
+		}
+
+		#endregion
 	}
 }

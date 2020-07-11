@@ -15,7 +15,7 @@ namespace HomeAPI.Backend.Tests.Providers
 {
 	public class HueProviderTests
 	{
-		#region 
+		#region HueProvider
 
 		[Fact]
 		public void HueProvider_Constructor()
@@ -176,10 +176,48 @@ namespace HomeAPI.Backend.Tests.Providers
 				Brightness = 123,
 				ColorTemperature = 102
 			});
+			lightStateUpdateFactory.CreateOnOffLightStateUpdateFromLightState(Arg.Any<LightStateUpdate>()).Returns(new HueOnOffLightStateUpdate() { On = true });
 			var hueProvider = new HueProvider(clientFactory, optionsMonitor, lightStateUpdateFactory);
 
 			var result = await hueProvider.SetLightStateAsync(4, new LightStateUpdate());
 
+			Assert.True(result);
+		}
+
+		[Fact]
+		public async Task SetLightStateAsync_Successful_LightStateOff()
+		{
+			string response1 = "{\"state\":{\"on\":true,\"bri\":200,\"ct\":250,\"alert\":\"none\",\"colormode\":\"ct\",\"mode\":\"homeautomation\",\"reachable\":true},\"swupdate\":{\"state\":\"notupdatable\",\"lastinstall\":null},\"type\":\"Color temperature light\",\"name\":\"Esszimmer 1\",\"modelid\":\"TRADFRI bulb GU10 WS 400lm\",\"manufacturername\":\"IKEA of Sweden\",\"productname\":\"Color temperature light\",\"capabilities\":{\"certified\":false,\"control\":{\"ct\":{\"min\":250,\"max\":454}},\"streaming\":{\"renderer\":false,\"proxy\":false}},\"config\":{\"archetype\":\"classicbulb\",\"function\":\"functional\",\"direction\":\"omnidirectional\"},\"uniqueid\":\"00:0b:57:ff:fe:a0:d5:47-01\",\"swversion\":\"1.2.217\"}";
+			HttpStatusCode statusCode1 = HttpStatusCode.OK;
+			var messageHandlerMock1 = new HttpMessageHandlerMock(response1, statusCode1);
+			var httpClient1 = new HttpClient(messageHandlerMock1);
+			string response2 = "[{\"success\":{\"/lights/4/state/on\":true}}]";
+			HttpStatusCode statusCode2 = HttpStatusCode.OK;
+			var messageHandlerMock2 = new HttpMessageHandlerMock(response2, statusCode2);
+			var httpClient2 = new HttpClient(messageHandlerMock2);
+			var clientFactory = Substitute.For<IHttpClientFactory>();
+			clientFactory.CreateClient().Returns(httpClient1, httpClient2);
+			var optionsMonitor = Substitute.For<IOptionsMonitor<HueOptions>>();
+			var hueOptions = new HueOptions()
+			{
+				BridgeIP = "192.168.0.5",
+				BridgePort = 0,
+				UserKey = "abc123"
+			};
+			optionsMonitor.CurrentValue.Returns(hueOptions);
+			var lightStateUpdateFactory = Substitute.For<IHueLightStateUpdateFactory>();
+			lightStateUpdateFactory.CreateFromLightState(Arg.Any<LightType>(), Arg.Any<LightStateUpdate>()).Returns(new HueLightStateUpdateColorTemperature()
+			{
+				On = true,
+				Brightness = 123,
+				ColorTemperature = 102
+			});
+			lightStateUpdateFactory.CreateOnOffLightStateUpdateFromLightState(Arg.Any<LightStateUpdate>()).Returns(new HueOnOffLightStateUpdate() { On = false });
+			var hueProvider = new HueProvider(clientFactory, optionsMonitor, lightStateUpdateFactory);
+
+			var result = await hueProvider.SetLightStateAsync(4, new LightStateUpdate());
+
+			lightStateUpdateFactory.DidNotReceiveWithAnyArgs().CreateFromLightState(default, default);
 			Assert.True(result);
 		}
 
@@ -280,6 +318,7 @@ namespace HomeAPI.Backend.Tests.Providers
 				Brightness = 123,
 				ColorTemperature = 102
 			});
+			lightStateUpdateFactory.CreateOnOffLightStateUpdateFromLightState(Arg.Any<LightStateUpdate>()).Returns(new HueOnOffLightStateUpdate() { On = true });
 			var hueProvider = new HueProvider(clientFactory, optionsMonitor, lightStateUpdateFactory);
 			LightScene scene = new LightScene()
 			{
@@ -316,6 +355,7 @@ namespace HomeAPI.Backend.Tests.Providers
 			optionsMonitor.CurrentValue.Returns(hueOptions);
 			var lightStateUpdateFactory = Substitute.For<IHueLightStateUpdateFactory>();
 			lightStateUpdateFactory.CreateFromLightState(Arg.Any<LightType>(), Arg.Any<LightStateUpdate>()).Returns(x => throw new Exception());
+			lightStateUpdateFactory.CreateOnOffLightStateUpdateFromLightState(Arg.Any<LightStateUpdate>()).Returns(new HueOnOffLightStateUpdate() { On = true });
 			var hueProvider = new HueProvider(clientFactory, optionsMonitor, lightStateUpdateFactory);
 			LightScene scene = new LightScene()
 			{
@@ -329,7 +369,7 @@ namespace HomeAPI.Backend.Tests.Providers
 			Assert.False(result);
 		}
 
-				[Fact]
+		[Fact]
 		public async Task ApplyLightSceneAsync_SceneDataInvalid()
 		{
 			string response1 = "{\"state\":{\"on\":true,\"bri\":200,\"ct\":250,\"alert\":\"none\",\"colormode\":\"ct\",\"mode\":\"homeautomation\",\"reachable\":true},\"swupdate\":{\"state\":\"notupdatable\",\"lastinstall\":null},\"type\":\"Color temperature light\",\"name\":\"Esszimmer 1\",\"modelid\":\"TRADFRI bulb GU10 WS 400lm\",\"manufacturername\":\"IKEA of Sweden\",\"productname\":\"Color temperature light\",\"capabilities\":{\"certified\":false,\"control\":{\"ct\":{\"min\":250,\"max\":454}},\"streaming\":{\"renderer\":false,\"proxy\":false}},\"config\":{\"archetype\":\"classicbulb\",\"function\":\"functional\",\"direction\":\"omnidirectional\"},\"uniqueid\":\"00:0b:57:ff:fe:a0:d5:47-01\",\"swversion\":\"1.2.217\"}";
@@ -357,6 +397,7 @@ namespace HomeAPI.Backend.Tests.Providers
 				Brightness = 123,
 				ColorTemperature = 102
 			});
+			lightStateUpdateFactory.CreateOnOffLightStateUpdateFromLightState(Arg.Any<LightStateUpdate>()).Returns(new HueOnOffLightStateUpdate() { On = true });
 			var hueProvider = new HueProvider(clientFactory, optionsMonitor, lightStateUpdateFactory);
 			LightScene scene = new LightScene()
 			{
