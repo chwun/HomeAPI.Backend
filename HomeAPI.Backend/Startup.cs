@@ -7,7 +7,8 @@ using HomeAPI.Backend.Data.Lighting;
 using HomeAPI.Backend.Models.Lighting;
 using HomeAPI.Backend.Models.Lighting.Hue;
 using HomeAPI.Backend.Options;
-using HomeAPI.Backend.Providers;
+using HomeAPI.Backend.Providers.Lighting;
+using HomeAPI.Backend.Providers.Weather;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpOverrides;
@@ -37,7 +38,10 @@ namespace HomeAPI.Backend
 			services.AddTransient<IHueProvider, HueProvider>();
 			services.AddTransient<IHueLightStateUpdateFactory, HueLightStateUpdateFactory>();
 
+			services.AddTransient<IOWMProvider, OWMProvider>();
+
 			services.Configure<HueOptions>(Configuration.GetSection("HueOptions"));
+			services.Configure<OWMOptions>(Configuration.GetSection("OWMOptions"));
 
 			services.AddControllers()
 				.AddNewtonsoftJson();

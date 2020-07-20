@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using HomeAPI.Backend.Models.Lighting;
 
-namespace HomeAPI.Backend.Providers
+namespace HomeAPI.Backend.Providers.Lighting
 {
 	public interface IHueProvider
 	{

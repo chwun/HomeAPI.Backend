@@ -1,15 +1,10 @@
-using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using HomeAPI.Backend.Data;
-using HomeAPI.Backend.Data.Lighting;
-using HomeAPI.Backend.Models;
 using HomeAPI.Backend.Models.Lighting;
-using HomeAPI.Backend.Providers;
+using HomeAPI.Backend.Providers.Lighting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace HomeAPI.Backend.Controllers
 {

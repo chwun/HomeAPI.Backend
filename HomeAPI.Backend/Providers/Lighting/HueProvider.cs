@@ -9,7 +9,7 @@ using HomeAPI.Backend.Options;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 
-namespace HomeAPI.Backend.Providers
+namespace HomeAPI.Backend.Providers.Lighting
 {
 	public class HueProvider : IHueProvider
 	{
@@ -18,10 +18,10 @@ namespace HomeAPI.Backend.Providers
 		private readonly IHueLightStateUpdateFactory lightStateUpdateFactory;
 		private readonly string apiUrl;
 
-		public HueProvider(IHttpClientFactory clientFactory, IOptionsMonitor<HueOptions> optionsAccessor, IHueLightStateUpdateFactory lightStateUpdateFactory)
+		public HueProvider(IHttpClientFactory clientFactory, IOptionsMonitor<HueOptions> optionsMonitor, IHueLightStateUpdateFactory lightStateUpdateFactory)
 		{
 			this.clientFactory = clientFactory;
-			options = optionsAccessor.CurrentValue;
+			options = optionsMonitor.CurrentValue;
 			this.lightStateUpdateFactory = lightStateUpdateFactory;
 
 			apiUrl = $"http://{options.BridgeIP}";
