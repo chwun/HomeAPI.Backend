@@ -5,13 +5,13 @@ using System.Threading.Tasks;
 using HomeAPI.Backend.Models.Lighting;
 using HomeAPI.Backend.Models.Lighting.Hue;
 using HomeAPI.Backend.Options;
-using HomeAPI.Backend.Providers;
+using HomeAPI.Backend.Providers.Lighting;
 using HomeAPI.Backend.Tests.TestHelpers;
 using Microsoft.Extensions.Options;
 using NSubstitute;
 using Xunit;
 
-namespace HomeAPI.Backend.Tests.Providers
+namespace HomeAPI.Backend.Tests.Providers.Lighting
 {
 	public class HueProviderTests
 	{
@@ -33,7 +33,7 @@ namespace HomeAPI.Backend.Tests.Providers
 
 			var hueProvider = new HueProvider(clientFactory, optionsMonitor, lightStateUpdateFactory);
 
-			Assert.NotNull(hueProvider);
+			Assert.NotNull(hueProvider); // dummy test
 		}
 
 		#endregion
