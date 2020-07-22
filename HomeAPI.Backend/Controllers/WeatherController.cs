@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using HomeAPI.Backend.Models.Weather;
 using HomeAPI.Backend.Providers.Weather;
@@ -30,6 +31,21 @@ namespace HomeAPI.Backend.Controllers
 			}
 
 			return Ok(weather);
+		}
+
+		[HttpGet("forecast/daily")]
+		[ProducesResponseType(StatusCodes.Status200OK)]
+		[ProducesResponseType(StatusCodes.Status404NotFound)]
+		public async Task<ActionResult<List<DailyWeatherData>>> GetDailyForecast()
+		{
+			var dailyForecast = await owmProvider.GetDailyForecastAsync();
+
+			if ((dailyForecast == null) || (dailyForecast.Count == 0))
+			{
+				return NotFound();
+			}
+
+			return Ok(dailyForecast);
 		}
 	}
 }

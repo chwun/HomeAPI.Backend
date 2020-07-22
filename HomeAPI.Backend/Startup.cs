@@ -2,6 +2,7 @@ using System;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Runtime.InteropServices;
+using HomeAPI.Backend.Common;
 using HomeAPI.Backend.Data;
 using HomeAPI.Backend.Data.Lighting;
 using HomeAPI.Backend.Models.Lighting;
@@ -33,6 +34,8 @@ namespace HomeAPI.Backend
 		public void ConfigureServices(IServiceCollection services)
 		{
 			AddDbContext(services);
+
+			services.AddTransient<IDateTimeProvider, DateTimeProvider>();
 
 			services.AddScoped<IAsyncRepository<LightScene>, LightSceneRepository>();
 			services.AddTransient<IHueProvider, HueProvider>();

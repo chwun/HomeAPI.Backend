@@ -1,7 +1,10 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
+using HomeAPI.Backend.Common;
 using HomeAPI.Backend.Models.Weather;
 using HomeAPI.Backend.Models.Weather.OpenWeatherMap;
 using HomeAPI.Backend.Options;
@@ -15,11 +18,13 @@ namespace HomeAPI.Backend.Providers.Weather
 		private readonly IHttpClientFactory clientFactory;
 		private readonly OWMOptions options;
 		private readonly string apiUrl;
+		private readonly IDateTimeProvider dateTimeProvider;
 
-		public OWMProvider(IHttpClientFactory clientFactory, IOptionsMonitor<OWMOptions> optionsMonitor)
+		public OWMProvider(IHttpClientFactory clientFactory, IOptionsMonitor<OWMOptions> optionsMonitor, IDateTimeProvider dateTimeProvider)
 		{
 			this.clientFactory = clientFactory;
 			options = optionsMonitor.CurrentValue;
+			this.dateTimeProvider = dateTimeProvider;
 
 			apiUrl = $"http://api.openweathermap.org/data/2.5/onecall?appid={options.ApiKey}";
 		}
@@ -46,6 +51,14 @@ namespace HomeAPI.Backend.Providers.Weather
 			{
 				return null;
 			}
+		}
+
+		public async Task<List<DailyWeatherData>> GetDailyForecastAsync()
+		{
+			var weather = await GetWeatherAsync();
+			var daily = weather?.Daily?.OrderBy(x => x.Timestamp).Where(x => x.Timestamp.Date > dateTimeProvider.UtcNow.Date).ToList();
+
+			return daily;
 		}
 	}
 }
