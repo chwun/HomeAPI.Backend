@@ -45,4 +45,5 @@ StyleCop.Cache
 UpgradeLog.htm
 .idea
 appsettings.Development.json
+appsettings.Production.json
 HomeAPI.db
