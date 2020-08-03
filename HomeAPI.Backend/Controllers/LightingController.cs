@@ -12,10 +12,10 @@ namespace HomeAPI.Backend.Controllers
 	[ApiController]
 	public class LightingController : ControllerBase
 	{
-		private readonly IHueProvider hueProvider;
+		private readonly IHueLightProvider hueProvider;
 		private readonly IAsyncRepository<LightScene> lightSceneRepository;
 
-		public LightingController(IHueProvider hueProvider, IAsyncRepository<LightScene> lightSceneRepository)
+		public LightingController(IHueLightProvider hueProvider, IAsyncRepository<LightScene> lightSceneRepository)
 		{
 			this.lightSceneRepository = lightSceneRepository;
 			this.hueProvider = hueProvider;

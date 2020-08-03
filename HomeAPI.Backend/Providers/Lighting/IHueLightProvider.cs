@@ -4,7 +4,7 @@ using HomeAPI.Backend.Models.Lighting;
 
 namespace HomeAPI.Backend.Providers.Lighting
 {
-	public interface IHueProvider
+	public interface IHueLightProvider
 	{
 		Task<List<Light>> GetAllLightsAsync();
 

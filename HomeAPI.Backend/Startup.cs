@@ -38,7 +38,7 @@ namespace HomeAPI.Backend
 			services.AddTransient<IDateTimeProvider, DateTimeProvider>();
 
 			services.AddScoped<IAsyncRepository<LightScene>, LightSceneRepository>();
-			services.AddTransient<IHueProvider, HueProvider>();
+			services.AddTransient<IHueLightProvider, HueLightProvider>();
 			services.AddTransient<IHueLightStateUpdateFactory, HueLightStateUpdateFactory>();
 
 			services.AddTransient<IOWMProvider, OWMProvider>();

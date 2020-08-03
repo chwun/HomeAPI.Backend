@@ -11,14 +11,14 @@ using Newtonsoft.Json;
 
 namespace HomeAPI.Backend.Providers.Lighting
 {
-	public class HueProvider : IHueProvider
+	public class HueLightProvider : IHueLightProvider
 	{
 		private readonly IHttpClientFactory clientFactory;
 		private readonly HueOptions options;
 		private readonly IHueLightStateUpdateFactory lightStateUpdateFactory;
 		private readonly string apiUrl;
 
-		public HueProvider(IHttpClientFactory clientFactory, IOptionsMonitor<HueOptions> optionsMonitor, IHueLightStateUpdateFactory lightStateUpdateFactory)
+		public HueLightProvider(IHttpClientFactory clientFactory, IOptionsMonitor<HueOptions> optionsMonitor, IHueLightStateUpdateFactory lightStateUpdateFactory)
 		{
 			this.clientFactory = clientFactory;
 			options = optionsMonitor.CurrentValue;

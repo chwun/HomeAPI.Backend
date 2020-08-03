@@ -184,7 +184,8 @@ namespace HomeAPI.Backend.Tests.Controllers
 
 			var okResult = Assert.IsType<OkObjectResult>(result.Result);
 			var resultWeather = Assert.IsType<List<DailyWeatherData>>(okResult.Value);
-			Assert.Equal(1, resultWeather.Count);
+			
+			Assert.Single(resultWeather);
 		}
 
 		[Fact]
