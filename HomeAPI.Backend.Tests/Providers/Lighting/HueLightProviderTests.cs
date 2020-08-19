@@ -31,9 +31,9 @@ namespace HomeAPI.Backend.Tests.Providers.Lighting
 			optionsMonitor.CurrentValue.Returns(hueOptions);
 			var lightStateUpdateFactory = Substitute.For<IHueLightStateUpdateFactory>();
 
-			var hueProvider = new HueLightProvider(clientFactory, optionsMonitor, lightStateUpdateFactory);
+			var hueLightProvider = new HueLightProvider(clientFactory, optionsMonitor, lightStateUpdateFactory);
 
-			Assert.NotNull(hueProvider); // dummy test
+			Assert.NotNull(hueLightProvider); // dummy test
 		}
 
 		#endregion
@@ -58,15 +58,15 @@ namespace HomeAPI.Backend.Tests.Providers.Lighting
 			};
 			optionsMonitor.CurrentValue.Returns(hueOptions);
 			var lightStateUpdateFactory = Substitute.For<IHueLightStateUpdateFactory>();
-			var hueProvider = new HueLightProvider(clientFactory, optionsMonitor, lightStateUpdateFactory);
+			var hueLightProvider = new HueLightProvider(clientFactory, optionsMonitor, lightStateUpdateFactory);
 
-			var lights = await hueProvider.GetAllLightsAsync();
+			var lights = await hueLightProvider.GetAllLightsAsync();
 
 			Assert.Equal(7, lights.Count);
 		}
 
 		[Fact]
-		public async Task GetAllLightsAsync_InvalidJSON()
+		public async Task GetAllLightsAsync_InvalidJson()
 		{
 			string response = "{abc}";
 			HttpStatusCode statusCode = HttpStatusCode.OK;
@@ -83,9 +83,9 @@ namespace HomeAPI.Backend.Tests.Providers.Lighting
 			};
 			optionsMonitor.CurrentValue.Returns(hueOptions);
 			var lightStateUpdateFactory = Substitute.For<IHueLightStateUpdateFactory>();
-			var hueProvider = new HueLightProvider(clientFactory, optionsMonitor, lightStateUpdateFactory);
+			var hueLightProvider = new HueLightProvider(clientFactory, optionsMonitor, lightStateUpdateFactory);
 
-			var lights = await hueProvider.GetAllLightsAsync();
+			var lights = await hueLightProvider.GetAllLightsAsync();
 
 			Assert.Empty(lights);
 		}
@@ -112,15 +112,15 @@ namespace HomeAPI.Backend.Tests.Providers.Lighting
 			};
 			optionsMonitor.CurrentValue.Returns(hueOptions);
 			var lightStateUpdateFactory = Substitute.For<IHueLightStateUpdateFactory>();
-			var hueProvider = new HueLightProvider(clientFactory, optionsMonitor, lightStateUpdateFactory);
+			var hueLightProvider = new HueLightProvider(clientFactory, optionsMonitor, lightStateUpdateFactory);
 
-			var light = await hueProvider.GetLightByIdAsync(4);
+			var light = await hueLightProvider.GetLightByIdAsync(4);
 
 			Assert.NotNull(light);
 		}
 
 		[Fact]
-		public async Task GetLightByIdAsync_InvalidJSON()
+		public async Task GetLightByIdAsync_InvalidJson()
 		{
 			string response = "{abc}";
 			HttpStatusCode statusCode = HttpStatusCode.OK;
@@ -137,9 +137,9 @@ namespace HomeAPI.Backend.Tests.Providers.Lighting
 			};
 			optionsMonitor.CurrentValue.Returns(hueOptions);
 			var lightStateUpdateFactory = Substitute.For<IHueLightStateUpdateFactory>();
-			var hueProvider = new HueLightProvider(clientFactory, optionsMonitor, lightStateUpdateFactory);
+			var hueLightProvider = new HueLightProvider(clientFactory, optionsMonitor, lightStateUpdateFactory);
 
-			var light = await hueProvider.GetLightByIdAsync(4);
+			var light = await hueLightProvider.GetLightByIdAsync(4);
 
 			Assert.Null(light);
 		}
@@ -177,9 +177,9 @@ namespace HomeAPI.Backend.Tests.Providers.Lighting
 				ColorTemperature = 102
 			});
 			lightStateUpdateFactory.CreateOnOffLightStateUpdateFromLightState(Arg.Any<LightStateUpdate>()).Returns(new HueOnOffLightStateUpdate() { On = true });
-			var hueProvider = new HueLightProvider(clientFactory, optionsMonitor, lightStateUpdateFactory);
+			var hueLightProvider = new HueLightProvider(clientFactory, optionsMonitor, lightStateUpdateFactory);
 
-			var result = await hueProvider.SetLightStateAsync(4, new LightStateUpdate());
+			var result = await hueLightProvider.SetLightStateAsync(4, new LightStateUpdate());
 
 			Assert.True(result);
 		}
@@ -213,9 +213,9 @@ namespace HomeAPI.Backend.Tests.Providers.Lighting
 				ColorTemperature = 102
 			});
 			lightStateUpdateFactory.CreateOnOffLightStateUpdateFromLightState(Arg.Any<LightStateUpdate>()).Returns(new HueOnOffLightStateUpdate() { On = false });
-			var hueProvider = new HueLightProvider(clientFactory, optionsMonitor, lightStateUpdateFactory);
+			var hueLightProvider = new HueLightProvider(clientFactory, optionsMonitor, lightStateUpdateFactory);
 
-			var result = await hueProvider.SetLightStateAsync(4, new LightStateUpdate());
+			var result = await hueLightProvider.SetLightStateAsync(4, new LightStateUpdate());
 
 			lightStateUpdateFactory.DidNotReceiveWithAnyArgs().CreateFromLightState(default, default);
 			Assert.True(result);
@@ -249,9 +249,9 @@ namespace HomeAPI.Backend.Tests.Providers.Lighting
 				Brightness = 123,
 				ColorTemperature = 102
 			});
-			var hueProvider = new HueLightProvider(clientFactory, optionsMonitor, lightStateUpdateFactory);
+			var hueLightProvider = new HueLightProvider(clientFactory, optionsMonitor, lightStateUpdateFactory);
 
-			var result = await hueProvider.SetLightStateAsync(4, new LightStateUpdate());
+			var result = await hueLightProvider.SetLightStateAsync(4, new LightStateUpdate());
 
 			Assert.False(result);
 		}
@@ -279,9 +279,9 @@ namespace HomeAPI.Backend.Tests.Providers.Lighting
 			optionsMonitor.CurrentValue.Returns(hueOptions);
 			var lightStateUpdateFactory = Substitute.For<IHueLightStateUpdateFactory>();
 			lightStateUpdateFactory.CreateFromLightState(Arg.Any<LightType>(), Arg.Any<LightStateUpdate>()).Returns(x => throw new Exception());
-			var hueProvider = new HueLightProvider(clientFactory, optionsMonitor, lightStateUpdateFactory);
+			var hueLightProvider = new HueLightProvider(clientFactory, optionsMonitor, lightStateUpdateFactory);
 
-			var result = await hueProvider.SetLightStateAsync(4, new LightStateUpdate());
+			var result = await hueLightProvider.SetLightStateAsync(4, new LightStateUpdate());
 
 			Assert.False(result);
 		}
@@ -319,7 +319,7 @@ namespace HomeAPI.Backend.Tests.Providers.Lighting
 				ColorTemperature = 102
 			});
 			lightStateUpdateFactory.CreateOnOffLightStateUpdateFromLightState(Arg.Any<LightStateUpdate>()).Returns(new HueOnOffLightStateUpdate() { On = true });
-			var hueProvider = new HueLightProvider(clientFactory, optionsMonitor, lightStateUpdateFactory);
+			var hueLightProvider = new HueLightProvider(clientFactory, optionsMonitor, lightStateUpdateFactory);
 			LightScene scene = new LightScene()
 			{
 				Id = 2,
@@ -327,7 +327,7 @@ namespace HomeAPI.Backend.Tests.Providers.Lighting
 				Data = "{\"1\":{\"on\":false,\"brightness\":126,\"saturation\":0,\"hue\":0,\"colorTemperature\":0,\"reachable\":true},\"2\":{\"on\":false,\"brightness\":185,\"saturation\":0,\"hue\":0,\"colorTemperature\":0,\"reachable\":true}}"
 			};
 
-			var result = await hueProvider.ApplyLightSceneAsync(scene);
+			var result = await hueLightProvider.ApplyLightSceneAsync(scene);
 
 			Assert.True(result);
 		}
@@ -356,7 +356,7 @@ namespace HomeAPI.Backend.Tests.Providers.Lighting
 			var lightStateUpdateFactory = Substitute.For<IHueLightStateUpdateFactory>();
 			lightStateUpdateFactory.CreateFromLightState(Arg.Any<LightType>(), Arg.Any<LightStateUpdate>()).Returns(x => throw new Exception());
 			lightStateUpdateFactory.CreateOnOffLightStateUpdateFromLightState(Arg.Any<LightStateUpdate>()).Returns(new HueOnOffLightStateUpdate() { On = true });
-			var hueProvider = new HueLightProvider(clientFactory, optionsMonitor, lightStateUpdateFactory);
+			var hueLightProvider = new HueLightProvider(clientFactory, optionsMonitor, lightStateUpdateFactory);
 			LightScene scene = new LightScene()
 			{
 				Id = 2,
@@ -364,7 +364,7 @@ namespace HomeAPI.Backend.Tests.Providers.Lighting
 				Data = "{\"1\":{\"on\":false,\"brightness\":126,\"saturation\":0,\"hue\":0,\"colorTemperature\":0,\"reachable\":true},\"2\":{\"on\":false,\"brightness\":185,\"saturation\":0,\"hue\":0,\"colorTemperature\":0,\"reachable\":true}}"
 			};
 
-			var result = await hueProvider.ApplyLightSceneAsync(scene);
+			var result = await hueLightProvider.ApplyLightSceneAsync(scene);
 
 			Assert.False(result);
 		}
@@ -398,7 +398,7 @@ namespace HomeAPI.Backend.Tests.Providers.Lighting
 				ColorTemperature = 102
 			});
 			lightStateUpdateFactory.CreateOnOffLightStateUpdateFromLightState(Arg.Any<LightStateUpdate>()).Returns(new HueOnOffLightStateUpdate() { On = true });
-			var hueProvider = new HueLightProvider(clientFactory, optionsMonitor, lightStateUpdateFactory);
+			var hueLightProvider = new HueLightProvider(clientFactory, optionsMonitor, lightStateUpdateFactory);
 			LightScene scene = new LightScene()
 			{
 				Id = 2,
@@ -406,7 +406,7 @@ namespace HomeAPI.Backend.Tests.Providers.Lighting
 				Data = "{\"abcInvalidInt\":{\"on\":false,\"brightness\":126,\"saturation\":0,\"hue\":0,\"colorTemperature\":0,\"reachable\":true},\"2\":{\"on\":false,\"brightness\":185,\"saturation\":0,\"hue\":0,\"colorTemperature\":0,\"reachable\":true}}"
 			};
 
-			var result = await hueProvider.ApplyLightSceneAsync(scene);
+			var result = await hueLightProvider.ApplyLightSceneAsync(scene);
 
 			Assert.False(result);
 		}

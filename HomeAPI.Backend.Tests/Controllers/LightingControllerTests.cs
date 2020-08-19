@@ -17,10 +17,10 @@ namespace HomeAPI.Backend.Tests.Controllers
 		[Fact]
 		public async Task GetAllLights_ListNull()
 		{
-			var hueProvider = Substitute.For<IHueLightProvider>();
+			var hueLightProvider = Substitute.For<IHueLightProvider>();
 			List<Light> list = null;
-			hueProvider.GetAllLightsAsync().Returns(Task.FromResult(list));
-			var controller = new LightingController(hueProvider, null);
+			hueLightProvider.GetAllLightsAsync().Returns(Task.FromResult(list));
+			var controller = new LightingController(hueLightProvider, null);
 
 			var result = await controller.GetAllLights();
 
@@ -30,10 +30,10 @@ namespace HomeAPI.Backend.Tests.Controllers
 		[Fact]
 		public async Task GetAllLights_ListEmpty()
 		{
-			var hueProvider = Substitute.For<IHueLightProvider>();
+			var hueLightProvider = Substitute.For<IHueLightProvider>();
 			List<Light> list = new List<Light>();
-			hueProvider.GetAllLightsAsync().Returns(Task.FromResult(list));
-			var controller = new LightingController(hueProvider, null);
+			hueLightProvider.GetAllLightsAsync().Returns(Task.FromResult(list));
+			var controller = new LightingController(hueLightProvider, null);
 
 			var result = await controller.GetAllLights();
 
@@ -43,7 +43,7 @@ namespace HomeAPI.Backend.Tests.Controllers
 		[Fact]
 		public async Task GetAllLights_ListValid()
 		{
-			var hueProvider = Substitute.For<IHueLightProvider>();
+			var hueLightProvider = Substitute.For<IHueLightProvider>();
 			List<Light> list = new List<Light>()
 			{
 				new Light()
@@ -61,8 +61,8 @@ namespace HomeAPI.Backend.Tests.Controllers
 					}
 				}
 			};
-			hueProvider.GetAllLightsAsync().Returns(Task.FromResult(list));
-			var controller = new LightingController(hueProvider, null);
+			hueLightProvider.GetAllLightsAsync().Returns(Task.FromResult(list));
+			var controller = new LightingController(hueLightProvider, null);
 
 			var result = await controller.GetAllLights();
 
@@ -78,10 +78,10 @@ namespace HomeAPI.Backend.Tests.Controllers
 		[Fact]
 		public async Task GetLight_NotFound()
 		{
-			var hueProvider = Substitute.For<IHueLightProvider>();
+			var hueLightProvider = Substitute.For<IHueLightProvider>();
 			Light light = null;
-			hueProvider.GetLightByIdAsync(Arg.Any<int>()).Returns(Task.FromResult(light));
-			var controller = new LightingController(hueProvider, null);
+			hueLightProvider.GetLightByIdAsync(Arg.Any<int>()).Returns(Task.FromResult(light));
+			var controller = new LightingController(hueLightProvider, null);
 
 			var result = await controller.GetLight(5);
 
@@ -91,7 +91,7 @@ namespace HomeAPI.Backend.Tests.Controllers
 		[Fact]
 		public async Task GetLight_Found()
 		{
-			var hueProvider = Substitute.For<IHueLightProvider>();
+			var hueLightProvider = Substitute.For<IHueLightProvider>();
 			Light light = new Light()
 			{
 				Id = 5,
@@ -106,8 +106,8 @@ namespace HomeAPI.Backend.Tests.Controllers
 					Reachable = true,
 				}
 			};
-			hueProvider.GetLightByIdAsync(Arg.Any<int>()).Returns(Task.FromResult(light));
-			var controller = new LightingController(hueProvider, null);
+			hueLightProvider.GetLightByIdAsync(Arg.Any<int>()).Returns(Task.FromResult(light));
+			var controller = new LightingController(hueLightProvider, null);
 
 			var result = await controller.GetLight(5);
 
@@ -123,7 +123,7 @@ namespace HomeAPI.Backend.Tests.Controllers
 		[Fact]
 		public async Task SetLightState_Success()
 		{
-			var hueProvider = Substitute.For<IHueLightProvider>();
+			var hueLightProvider = Substitute.For<IHueLightProvider>();
 			var lightStateUpdate = new LightStateUpdate()
 			{
 				On = true,
@@ -133,8 +133,8 @@ namespace HomeAPI.Backend.Tests.Controllers
 				ColorTemperature = 103
 			};
 			bool success = true;
-			hueProvider.SetLightStateAsync(Arg.Any<int>(), Arg.Any<LightStateUpdate>()).Returns(Task.FromResult(success));
-			var controller = new LightingController(hueProvider, null);
+			hueLightProvider.SetLightStateAsync(Arg.Any<int>(), Arg.Any<LightStateUpdate>()).Returns(Task.FromResult(success));
+			var controller = new LightingController(hueLightProvider, null);
 
 			var result = await controller.SetLightState(5, lightStateUpdate);
 
@@ -145,7 +145,7 @@ namespace HomeAPI.Backend.Tests.Controllers
 		[Fact]
 		public async Task SetLightState_NoSuccess()
 		{
-			var hueProvider = Substitute.For<IHueLightProvider>();
+			var hueLightProvider = Substitute.For<IHueLightProvider>();
 			var lightStateUpdate = new LightStateUpdate()
 			{
 				On = true,
@@ -155,8 +155,8 @@ namespace HomeAPI.Backend.Tests.Controllers
 				ColorTemperature = 103
 			};
 			bool success = false;
-			hueProvider.SetLightStateAsync(Arg.Any<int>(), Arg.Any<LightStateUpdate>()).Returns(Task.FromResult(success));
-			var controller = new LightingController(hueProvider, null);
+			hueLightProvider.SetLightStateAsync(Arg.Any<int>(), Arg.Any<LightStateUpdate>()).Returns(Task.FromResult(success));
+			var controller = new LightingController(hueLightProvider, null);
 
 			var result = await controller.SetLightState(5, lightStateUpdate);
 
@@ -171,7 +171,7 @@ namespace HomeAPI.Backend.Tests.Controllers
 		[Fact]
 		public async Task GetLightScenes_Ok()
 		{
-			var hueProvider = Substitute.For<IHueLightProvider>();
+			var hueLightProvider = Substitute.For<IHueLightProvider>();
 			var lightSceneRepository = Substitute.For<IAsyncRepository<LightScene>>();
 			IEnumerable<LightScene> lightScenes = new List<LightScene>()
 			{
@@ -183,7 +183,7 @@ namespace HomeAPI.Backend.Tests.Controllers
 				}
 			};
 			lightSceneRepository.GetAllAsync().Returns(Task.FromResult(lightScenes));
-			var controller = new LightingController(hueProvider, lightSceneRepository);
+			var controller = new LightingController(hueLightProvider, lightSceneRepository);
 
 			var result = await controller.GetLightScenes();
 
@@ -195,11 +195,11 @@ namespace HomeAPI.Backend.Tests.Controllers
 		[Fact]
 		public async Task GetLightScenes_NotFound()
 		{
-			var hueProvider = Substitute.For<IHueLightProvider>();
+			var hueLightProvider = Substitute.For<IHueLightProvider>();
 			var lightSceneRepository = Substitute.For<IAsyncRepository<LightScene>>();
 			IEnumerable<LightScene> lightScenes = null;
 			lightSceneRepository.GetAllAsync().Returns(Task.FromResult(lightScenes));
-			var controller = new LightingController(hueProvider, lightSceneRepository);
+			var controller = new LightingController(hueLightProvider, lightSceneRepository);
 
 			var result = await controller.GetLightScenes();
 
@@ -213,7 +213,7 @@ namespace HomeAPI.Backend.Tests.Controllers
 		[Fact]
 		public async Task GetLightScene_Ok()
 		{
-			var hueProvider = Substitute.For<IHueLightProvider>();
+			var hueLightProvider = Substitute.For<IHueLightProvider>();
 			var lightSceneRepository = Substitute.For<IAsyncRepository<LightScene>>();
 			var lightScene = new LightScene()
 			{
@@ -222,7 +222,7 @@ namespace HomeAPI.Backend.Tests.Controllers
 				Data = "abc"
 			};
 			lightSceneRepository.GetAsync(5).Returns(Task.FromResult(lightScene));
-			var controller = new LightingController(hueProvider, lightSceneRepository);
+			var controller = new LightingController(hueLightProvider, lightSceneRepository);
 
 			var result = await controller.GetLightScene(5);
 
@@ -236,11 +236,11 @@ namespace HomeAPI.Backend.Tests.Controllers
 		[Fact]
 		public async Task GetLightScene_NotFound()
 		{
-			var hueProvider = Substitute.For<IHueLightProvider>();
+			var hueLightProvider = Substitute.For<IHueLightProvider>();
 			var lightSceneRepository = Substitute.For<IAsyncRepository<LightScene>>();
 			LightScene lightScene = null;
 			lightSceneRepository.GetAsync(5).Returns(Task.FromResult(lightScene));
-			var controller = new LightingController(hueProvider, lightSceneRepository);
+			var controller = new LightingController(hueLightProvider, lightSceneRepository);
 
 			var result = await controller.GetLightScene(2);
 
@@ -254,7 +254,7 @@ namespace HomeAPI.Backend.Tests.Controllers
 		[Fact]
 		public async Task AddLightScene_Created()
 		{
-			var hueProvider = Substitute.For<IHueLightProvider>();
+			var hueLightProvider = Substitute.For<IHueLightProvider>();
 			var lightSceneRepository = Substitute.For<IAsyncRepository<LightScene>>();
 			var newLightScene = new LightScene()
 			{
@@ -262,7 +262,7 @@ namespace HomeAPI.Backend.Tests.Controllers
 				Name = "Test",
 				Data = "abc"
 			};
-			var controller = new LightingController(hueProvider, lightSceneRepository);
+			var controller = new LightingController(hueLightProvider, lightSceneRepository);
 
 			var result = await controller.AddLightScene(newLightScene);
 
@@ -276,10 +276,10 @@ namespace HomeAPI.Backend.Tests.Controllers
 		[Fact]
 		public async Task AddLightScene_BadRequest()
 		{
-			var hueProvider = Substitute.For<IHueLightProvider>();
+			var hueLightProvider = Substitute.For<IHueLightProvider>();
 			var lightSceneRepository = Substitute.For<IAsyncRepository<LightScene>>();
 			LightScene newLightScene = null;
-			var controller = new LightingController(hueProvider, lightSceneRepository);
+			var controller = new LightingController(hueLightProvider, lightSceneRepository);
 
 			var result = await controller.AddLightScene(newLightScene);
 
@@ -293,7 +293,7 @@ namespace HomeAPI.Backend.Tests.Controllers
 		[Fact]
 		public async Task UpdateLightScene_Ok()
 		{
-			var hueProvider = Substitute.For<IHueLightProvider>();
+			var hueLightProvider = Substitute.For<IHueLightProvider>();
 			var lightSceneRepository = Substitute.For<IAsyncRepository<LightScene>>();
 			var lightScene = new LightScene()
 			{
@@ -301,7 +301,7 @@ namespace HomeAPI.Backend.Tests.Controllers
 				Name = "Test",
 				Data = "abc"
 			};
-			var controller = new LightingController(hueProvider, lightSceneRepository);
+			var controller = new LightingController(hueLightProvider, lightSceneRepository);
 
 			var result = await controller.UpdateLightScene(5, lightScene);
 
@@ -316,7 +316,7 @@ namespace HomeAPI.Backend.Tests.Controllers
 		[Fact]
 		public async Task UpdateLightScene_BadRequest_InvalidId()
 		{
-			var hueProvider = Substitute.For<IHueLightProvider>();
+			var hueLightProvider = Substitute.For<IHueLightProvider>();
 			var lightSceneRepository = Substitute.For<IAsyncRepository<LightScene>>();
 			LightScene lightScene = new LightScene()
 			{
@@ -324,7 +324,7 @@ namespace HomeAPI.Backend.Tests.Controllers
 				Name = "Test",
 				Data = "abc"
 			};
-			var controller = new LightingController(hueProvider, lightSceneRepository);
+			var controller = new LightingController(hueLightProvider, lightSceneRepository);
 
 			var result = await controller.UpdateLightScene(7, lightScene);
 
@@ -334,10 +334,10 @@ namespace HomeAPI.Backend.Tests.Controllers
 		[Fact]
 		public async Task UpdateLightScene_BadRequest_SceneNull()
 		{
-			var hueProvider = Substitute.For<IHueLightProvider>();
+			var hueLightProvider = Substitute.For<IHueLightProvider>();
 			var lightSceneRepository = Substitute.For<IAsyncRepository<LightScene>>();
 			LightScene lightScene = null;
-			var controller = new LightingController(hueProvider, lightSceneRepository);
+			var controller = new LightingController(hueLightProvider, lightSceneRepository);
 
 			var result = await controller.UpdateLightScene(5, lightScene);
 
@@ -351,7 +351,7 @@ namespace HomeAPI.Backend.Tests.Controllers
 		[Fact]
 		public async Task DeleteLightScene_Ok()
 		{
-			var hueProvider = Substitute.For<IHueLightProvider>();
+			var hueLightProvider = Substitute.For<IHueLightProvider>();
 			var lightSceneRepository = Substitute.For<IAsyncRepository<LightScene>>();
 			var lightScene = new LightScene()
 			{
@@ -360,7 +360,7 @@ namespace HomeAPI.Backend.Tests.Controllers
 				Data = "abc"
 			};
 			lightSceneRepository.GetAsync(Arg.Is<int>(5)).Returns(lightScene);
-			var controller = new LightingController(hueProvider, lightSceneRepository);
+			var controller = new LightingController(hueLightProvider, lightSceneRepository);
 
 			var result = await controller.DeleteLightScene(5);
 
@@ -375,11 +375,11 @@ namespace HomeAPI.Backend.Tests.Controllers
 		[Fact]
 		public async Task DeleteLightScene_NotFound()
 		{
-			var hueProvider = Substitute.For<IHueLightProvider>();
+			var hueLightProvider = Substitute.For<IHueLightProvider>();
 			var lightSceneRepository = Substitute.For<IAsyncRepository<LightScene>>();
 			LightScene lightScene = null;
 			lightSceneRepository.GetAsync(Arg.Is<int>(5)).Returns(lightScene);
-			var controller = new LightingController(hueProvider, lightSceneRepository);
+			var controller = new LightingController(hueLightProvider, lightSceneRepository);
 
 			var result = await controller.DeleteLightScene(5);
 
@@ -393,8 +393,8 @@ namespace HomeAPI.Backend.Tests.Controllers
 		[Fact]
 		public async Task ApplyLightScene_Ok()
 		{
-			var hueProvider = Substitute.For<IHueLightProvider>();
-			hueProvider.ApplyLightSceneAsync(Arg.Any<LightScene>()).Returns(true);
+			var hueLightProvider = Substitute.For<IHueLightProvider>();
+			hueLightProvider.ApplyLightSceneAsync(Arg.Any<LightScene>()).Returns(true);
 			var lightSceneRepository = Substitute.For<IAsyncRepository<LightScene>>();
 			LightScene lightScene = new LightScene()
 			{
@@ -403,19 +403,19 @@ namespace HomeAPI.Backend.Tests.Controllers
 				Data = "abc"
 			};
 			lightSceneRepository.GetAsync(Arg.Is<int>(5)).Returns(lightScene);
-			var controller = new LightingController(hueProvider, lightSceneRepository);
+			var controller = new LightingController(hueLightProvider, lightSceneRepository);
 
 			var result = await controller.ApplyLightScene(5);
 
-			await hueProvider.Received(1).ApplyLightSceneAsync(Arg.Is<LightScene>(x => x.Id.Equals(5) && x.Name.Equals("Test") && x.Data.Equals("abc")));
+			await hueLightProvider.Received(1).ApplyLightSceneAsync(Arg.Is<LightScene>(x => x.Id.Equals(5) && x.Name.Equals("Test") && x.Data.Equals("abc")));
 			Assert.IsType<OkResult>(result);
 		}
 
 		[Fact]
 		public async Task ApplyLightScene_NotSuccessful()
 		{
-			var hueProvider = Substitute.For<IHueLightProvider>();
-			hueProvider.ApplyLightSceneAsync(Arg.Any<LightScene>()).Returns(false);
+			var hueLightProvider = Substitute.For<IHueLightProvider>();
+			hueLightProvider.ApplyLightSceneAsync(Arg.Any<LightScene>()).Returns(false);
 			var lightSceneRepository = Substitute.For<IAsyncRepository<LightScene>>();
 			LightScene lightScene = new LightScene()
 			{
@@ -424,22 +424,22 @@ namespace HomeAPI.Backend.Tests.Controllers
 				Data = "abc"
 			};
 			lightSceneRepository.GetAsync(Arg.Is<int>(5)).Returns(lightScene);
-			var controller = new LightingController(hueProvider, lightSceneRepository);
+			var controller = new LightingController(hueLightProvider, lightSceneRepository);
 
 			var result = await controller.ApplyLightScene(5);
 
-			await hueProvider.Received(1).ApplyLightSceneAsync(Arg.Is<LightScene>(x => x.Id.Equals(5) && x.Name.Equals("Test") && x.Data.Equals("abc")));
+			await hueLightProvider.Received(1).ApplyLightSceneAsync(Arg.Is<LightScene>(x => x.Id.Equals(5) && x.Name.Equals("Test") && x.Data.Equals("abc")));
 			Assert.IsType<NotFoundResult>(result);
 		}
 
 		[Fact]
 		public async Task ApplyLightScene_SceneNotFound()
 		{
-			var hueProvider = Substitute.For<IHueLightProvider>();
+			var hueLightProvider = Substitute.For<IHueLightProvider>();
 			var lightSceneRepository = Substitute.For<IAsyncRepository<LightScene>>();
 			LightScene lightScene = null;
 			lightSceneRepository.GetAsync(Arg.Is<int>(5)).Returns(lightScene);
-			var controller = new LightingController(hueProvider, lightSceneRepository);
+			var controller = new LightingController(hueLightProvider, lightSceneRepository);
 
 			var result = await controller.ApplyLightScene(5);
 

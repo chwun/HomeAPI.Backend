@@ -12,13 +12,13 @@ namespace HomeAPI.Backend.Controllers
 	[ApiController]
 	public class LightingController : ControllerBase
 	{
-		private readonly IHueLightProvider hueProvider;
+		private readonly IHueLightProvider hueLightProvider;
 		private readonly IAsyncRepository<LightScene> lightSceneRepository;
 
-		public LightingController(IHueLightProvider hueProvider, IAsyncRepository<LightScene> lightSceneRepository)
+		public LightingController(IHueLightProvider hueLightProvider, IAsyncRepository<LightScene> lightSceneRepository)
 		{
 			this.lightSceneRepository = lightSceneRepository;
-			this.hueProvider = hueProvider;
+			this.hueLightProvider = hueLightProvider;
 		}
 
 		[HttpGet("lights")]
@@ -27,7 +27,7 @@ namespace HomeAPI.Backend.Controllers
 		[ProducesResponseType(StatusCodes.Status404NotFound)]
 		public async Task<ActionResult<List<Light>>> GetAllLights()
 		{
-			var lights = await hueProvider.GetAllLightsAsync();
+			var lights = await hueLightProvider.GetAllLightsAsync();
 
 			if (lights == null)
 			{
@@ -42,12 +42,12 @@ namespace HomeAPI.Backend.Controllers
 			return Ok(lights);
 		}
 
-		[HttpGet("lights/{id:int}")]
+		[HttpGet("lights/{id}")]
 		[ProducesResponseType(StatusCodes.Status200OK)]
 		[ProducesResponseType(StatusCodes.Status404NotFound)]
 		public async Task<ActionResult<Light>> GetLight(int id)
 		{
-			var light = await hueProvider.GetLightByIdAsync(id);
+			var light = await hueLightProvider.GetLightByIdAsync(id);
 
 			if (light == null)
 			{
@@ -57,12 +57,12 @@ namespace HomeAPI.Backend.Controllers
 			return Ok(light);
 		}
 
-		[HttpPut("lights/{id:int}/state")]
+		[HttpPut("lights/{id}/state")]
 		[ProducesResponseType(StatusCodes.Status200OK)]
 		[ProducesResponseType(StatusCodes.Status404NotFound)]
 		public async Task<IActionResult> SetLightState(int id, [FromBody] LightStateUpdate stateUpdate)
 		{
-			bool success = await hueProvider.SetLightStateAsync(id, stateUpdate);
+			bool success = await hueLightProvider.SetLightStateAsync(id, stateUpdate);
 
 			if (success)
 			{
@@ -89,7 +89,7 @@ namespace HomeAPI.Backend.Controllers
 			return Ok(scenes);
 		}
 
-		[HttpGet("scenes/{id:int}")]
+		[HttpGet("scenes/{id}")]
 		[ProducesResponseType(StatusCodes.Status200OK)]
 		[ProducesResponseType(StatusCodes.Status404NotFound)]
 		public async Task<ActionResult<LightScene>> GetLightScene(int id)
@@ -122,7 +122,7 @@ namespace HomeAPI.Backend.Controllers
 			return CreatedAtAction(nameof(GetLightScene), new { id = scene.Id }, scene);
 		}
 
-		[HttpPut("scenes/{id:int}")]
+		[HttpPut("scenes/{id}")]
 		[ProducesResponseType(StatusCodes.Status200OK)]
 		[ProducesResponseType(StatusCodes.Status400BadRequest)]
 		public async Task<ActionResult<LightScene>> UpdateLightScene(int id, [FromBody] LightScene modifiedScene)
@@ -137,7 +137,7 @@ namespace HomeAPI.Backend.Controllers
 			return Ok(modifiedScene);
 		}
 
-		[HttpDelete("scenes/{id:int}")]
+		[HttpDelete("scenes/{id}")]
 		[ProducesResponseType(StatusCodes.Status200OK)]
 		[ProducesResponseType(StatusCodes.Status404NotFound)]
 		public async Task<ActionResult<LightScene>> DeleteLightScene(int id)
@@ -153,7 +153,7 @@ namespace HomeAPI.Backend.Controllers
 			return Ok(scene);
 		}
 
-		[HttpGet("scenes/{id:int}/active")]
+		[HttpGet("scenes/{id}/active")]
 		[ProducesResponseType(StatusCodes.Status200OK)]
 		[ProducesResponseType(StatusCodes.Status404NotFound)]
 		public async Task<IActionResult> ApplyLightScene(int id)
@@ -165,7 +165,7 @@ namespace HomeAPI.Backend.Controllers
 				return NotFound();
 			}
 
-			bool success = await hueProvider.ApplyLightSceneAsync(scene);
+			bool success = await hueLightProvider.ApplyLightSceneAsync(scene);
 
 			if (success)
 			{

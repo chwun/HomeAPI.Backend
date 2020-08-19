@@ -9,6 +9,7 @@ using HomeAPI.Backend.Models.Lighting;
 using HomeAPI.Backend.Models.Lighting.Hue;
 using HomeAPI.Backend.Options;
 using HomeAPI.Backend.Providers.Lighting;
+using HomeAPI.Backend.Providers.Sensors;
 using HomeAPI.Backend.Providers.Weather;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -40,6 +41,8 @@ namespace HomeAPI.Backend
 			services.AddScoped<IAsyncRepository<LightScene>, LightSceneRepository>();
 			services.AddTransient<IHueLightProvider, HueLightProvider>();
 			services.AddTransient<IHueLightStateUpdateFactory, HueLightStateUpdateFactory>();
+
+			services.AddTransient<IHueSensorProvider, HueSensorProvider>();
 
 			services.AddTransient<IOWMProvider, OWMProvider>();
 

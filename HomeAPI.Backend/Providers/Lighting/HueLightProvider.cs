@@ -11,26 +11,14 @@ using Newtonsoft.Json;
 
 namespace HomeAPI.Backend.Providers.Lighting
 {
-	public class HueLightProvider : IHueLightProvider
+	public class HueLightProvider : HueProvider, IHueLightProvider
 	{
-		private readonly IHttpClientFactory clientFactory;
-		private readonly HueOptions options;
 		private readonly IHueLightStateUpdateFactory lightStateUpdateFactory;
-		private readonly string apiUrl;
 
 		public HueLightProvider(IHttpClientFactory clientFactory, IOptionsMonitor<HueOptions> optionsMonitor, IHueLightStateUpdateFactory lightStateUpdateFactory)
+			: base(clientFactory, optionsMonitor)
 		{
-			this.clientFactory = clientFactory;
-			options = optionsMonitor.CurrentValue;
 			this.lightStateUpdateFactory = lightStateUpdateFactory;
-
-			apiUrl = $"http://{options.BridgeIP}";
-			if (options.BridgePort > 0)
-			{
-				apiUrl += $":{options.BridgePort}";
-			}
-
-			apiUrl += $"/api/{options.UserKey}";
 		}
 
 		public async Task<List<Light>> GetAllLightsAsync()
@@ -97,7 +85,7 @@ namespace HomeAPI.Backend.Providers.Lighting
 				var jsonOnOff = JsonConvert.SerializeObject(hueOnOffLightStateUpdate);
 				await httpClient.PutAsync(url, new StringContent(jsonOnOff));
 
-				// only proceed if light is switched on, because otherwise Hue will respond with error:
+				// only proceed if light gets switched on, because otherwise Hue will respond with error:
 				if (hueOnOffLightStateUpdate.On)
 				{
 					var hueLightStateUpdate = lightStateUpdateFactory.CreateFromLightState(light.Type, stateUpdate);
