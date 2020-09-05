@@ -29,12 +29,12 @@ namespace HomeAPI.Backend.Providers.Weather
 			apiUrl = $"http://api.openweathermap.org/data/2.5/onecall?appid={options.ApiKey}";
 		}
 
-		public async Task<CurrentWeatherResponse> GetWeatherAsync()
+		public async Task<CompleteWeatherData> GetCompleteWeatherAsync()
 		{
 			StringBuilder url = new StringBuilder(apiUrl);
 			url.AppendFormat("&lat={0}", options.Latitude);
 			url.AppendFormat("&lon={0}", options.Longitude);
-			url.AppendFormat("&exlude=hourly"); // only daily forecast is needed
+			url.AppendFormat("&exclude=hourly,minutely"); // only daily forecast needed
 			url.Append("&units=metric");
 			url.AppendFormat("&lang={0}", options.LanguageCode);
 
@@ -43,9 +43,33 @@ namespace HomeAPI.Backend.Providers.Weather
 				var httpClient = clientFactory.CreateClient();
 				var jsonResponse = await httpClient.GetStringAsync(url.ToString());
 
-				var weatherData = JsonConvert.DeserializeObject<OWMCurrentWeatherResponse>(jsonResponse);
+				var weatherData = JsonConvert.DeserializeObject<OWMCompleteWeatherData>(jsonResponse);
 
-				return weatherData?.ToCurrentWeatherResponse();
+				return weatherData?.ToCompleteWeatherData();
+			}
+			catch (Exception)
+			{
+				return null;
+			}
+		}
+
+		public async Task<CurrentWeatherData> GetCurrentWeatherAsync()
+		{
+			StringBuilder url = new StringBuilder(apiUrl);
+			url.AppendFormat("&lat={0}", options.Latitude);
+			url.AppendFormat("&lon={0}", options.Longitude);
+			url.AppendFormat("&exclude=daily,hourly,minutely"); // no forecast needed
+			url.Append("&units=metric");
+			url.AppendFormat("&lang={0}", options.LanguageCode);
+
+			try
+			{
+				var httpClient = clientFactory.CreateClient();
+				var jsonResponse = await httpClient.GetStringAsync(url.ToString());
+
+				var weatherData = JsonConvert.DeserializeObject<OWMCompleteWeatherData>(jsonResponse);
+
+				return weatherData?.ToCompleteWeatherData().Current;
 			}
 			catch (Exception)
 			{
@@ -55,7 +79,7 @@ namespace HomeAPI.Backend.Providers.Weather
 
 		public async Task<List<DailyWeatherData>> GetDailyForecastAsync()
 		{
-			var weather = await GetWeatherAsync();
+			var weather = await GetCompleteWeatherAsync();
 			var daily = weather?.Daily?.OrderBy(x => x.Timestamp).Where(x => x.Timestamp.Date > dateTimeProvider.UtcNow.Date).ToList();
 
 			return daily;

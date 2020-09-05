@@ -2,7 +2,7 @@ using System.Collections.Generic;
 
 namespace HomeAPI.Backend.Models.Weather
 {
-	public class CurrentWeatherResponse
+	public class CompleteWeatherData
 	{
 		public float Latitude { get; set; }
 

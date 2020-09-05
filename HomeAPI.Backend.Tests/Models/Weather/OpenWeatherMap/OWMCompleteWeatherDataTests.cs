@@ -4,12 +4,12 @@ using Xunit;
 
 namespace HomeAPI.Backend.Tests.Models.Weather.OpenWeatherMap
 {
-	public class OWMCurrentWeatherResponseTests
+	public class OWMCompleteWeatherDataTests
 	{
 		[Fact]
 		public void ToCurrentWeatherResponse()
 		{
-			var owmWeatherResponse = new OWMCurrentWeatherResponse()
+			var owmWeatherResponse = new OWMCompleteWeatherData()
 			{
 				Lat = 0.123f,
 				Lon = 1.5f,
@@ -122,7 +122,7 @@ namespace HomeAPI.Backend.Tests.Models.Weather.OpenWeatherMap
 				}
 			};
 
-			var result = owmWeatherResponse.ToCurrentWeatherResponse();
+			var result = owmWeatherResponse.ToCompleteWeatherData();
 
 			Assert.Equal(0.123f, result.Latitude);
 			Assert.Equal(1.5, result.Longitude);

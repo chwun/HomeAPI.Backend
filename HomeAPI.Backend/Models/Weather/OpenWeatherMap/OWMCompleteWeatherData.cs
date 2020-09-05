@@ -1,8 +1,9 @@
+using System.Collections.Generic;
 using System.Linq;
 
 namespace HomeAPI.Backend.Models.Weather.OpenWeatherMap
 {
-	public class OWMCurrentWeatherResponse
+	public class OWMCompleteWeatherData
 	{
 		public float Lat { get; set; }
 
@@ -12,14 +13,14 @@ namespace HomeAPI.Backend.Models.Weather.OpenWeatherMap
 
 		public OWMDailyWeatherData[] Daily { get; set; }
 
-		public CurrentWeatherResponse ToCurrentWeatherResponse()
+		public CompleteWeatherData ToCompleteWeatherData()
 		{
-			return new CurrentWeatherResponse()
+			return new CompleteWeatherData()
 			{
 				Latitude = Lat,
 				Longitude = Lon,
 				Current = Current.ToCurrentWeatherData(),
-				Daily = Daily.Select(x => x.ToDailyWeatherData()).ToList()
+				Daily = Daily?.Select(x => x.ToDailyWeatherData()).ToList() ?? new List<DailyWeatherData>()
 			};
 		}
 	}

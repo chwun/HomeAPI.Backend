@@ -21,9 +21,9 @@ namespace HomeAPI.Backend.Controllers
 		[HttpGet]
 		[ProducesResponseType(StatusCodes.Status200OK)]
 		[ProducesResponseType(StatusCodes.Status404NotFound)]
-		public async Task<ActionResult<CurrentWeatherResponse>> GetWeather()
+		public async Task<ActionResult<CompleteWeatherData>> GetWeather()
 		{
-			var weather = await owmProvider.GetWeatherAsync();
+			var weather = await owmProvider.GetCompleteWeatherAsync();
 
 			if (weather == null)
 			{
@@ -31,6 +31,21 @@ namespace HomeAPI.Backend.Controllers
 			}
 
 			return Ok(weather);
+		}
+
+		[HttpGet("current")]
+		[ProducesResponseType(StatusCodes.Status200OK)]
+		[ProducesResponseType(StatusCodes.Status404NotFound)]
+		public async Task<ActionResult<CurrentWeatherData>> GetCurrentWeather()
+		{
+			var currentWeather = await owmProvider.GetCurrentWeatherAsync();
+
+			if (currentWeather == null)
+			{
+				return NotFound();
+			}
+
+			return Ok(currentWeather);
 		}
 
 		[HttpGet("forecast/daily")]

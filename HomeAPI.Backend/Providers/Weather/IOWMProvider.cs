@@ -6,7 +6,9 @@ namespace HomeAPI.Backend.Providers.Weather
 {
 	public interface IOWMProvider
 	{
-		Task<CurrentWeatherResponse> GetWeatherAsync();
+		Task<CompleteWeatherData> GetCompleteWeatherAsync();
+
+		Task<CurrentWeatherData> GetCurrentWeatherAsync();
 
 		Task<List<DailyWeatherData>> GetDailyForecastAsync();
 	}
