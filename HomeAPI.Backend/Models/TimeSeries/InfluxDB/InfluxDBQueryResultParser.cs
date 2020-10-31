@@ -32,7 +32,7 @@ namespace HomeAPI.Backend.Models.TimeSeries.InfluxDB
 
 		private List<string> SplitIntoLines(string queryResult)
 		{
-			return queryResult.Split(new[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries).Skip(3).ToList();
+			return queryResult.Split(new[] {"\r\n", "\r", "\n"}, StringSplitOptions.RemoveEmptyEntries).Skip(3).ToList();
 		}
 
 		private int GetCsvIndex(string fieldName, string line)
