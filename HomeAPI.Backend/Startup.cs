@@ -7,7 +7,9 @@ using HomeAPI.Backend.Data;
 using HomeAPI.Backend.Data.Lighting;
 using HomeAPI.Backend.Models.Lighting;
 using HomeAPI.Backend.Models.Lighting.Hue;
+using HomeAPI.Backend.Models.TimeSeries.InfluxDB;
 using HomeAPI.Backend.Options;
+using HomeAPI.Backend.Providers.TimeSeries;
 using HomeAPI.Backend.Providers.Lighting;
 using HomeAPI.Backend.Providers.Sensors;
 using HomeAPI.Backend.Providers.Weather;
@@ -46,8 +48,13 @@ namespace HomeAPI.Backend
 
 			services.AddTransient<IOWMProvider, OWMProvider>();
 
+			services.AddTransient<IFluxHelper, FluxHelper>();
+			services.AddTransient<IInfluxDBQueryResultParser, InfluxDBQueryResultParser>();
+			services.AddTransient<IInfluxDBProvider, InfluxDBProvider>();
+
 			services.Configure<HueOptions>(Configuration.GetSection("HueOptions"));
 			services.Configure<OWMOptions>(Configuration.GetSection("OWMOptions"));
+			services.Configure<InfluxDBOptions>(Configuration.GetSection("InfluxDBOptions"));
 
 			services.AddControllers()
 				.AddNewtonsoftJson();
