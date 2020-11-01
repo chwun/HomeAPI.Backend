@@ -21,6 +21,9 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using AutoMapper;
+using HomeAPI.Backend.Models.News;
+using HomeAPI.Backend.Data.News;
+using HomeAPI.Backend.Providers.News;
 
 namespace HomeAPI.Backend
 {
@@ -54,6 +57,9 @@ namespace HomeAPI.Backend
 			services.AddTransient<IFluxHelper, FluxHelper>();
 			services.AddTransient<IInfluxDBQueryResultParser, InfluxDBQueryResultParser>();
 			services.AddTransient<IInfluxDBProvider, InfluxDBProvider>();
+
+			services.AddScoped<IAsyncRepository<NewsFeedSubscription>, NewsFeedSubscriptionRepository>();
+			services.AddTransient<IRssFeedProvider, RssFeedProvider>();
 
 			services.Configure<HueOptions>(Configuration.GetSection("HueOptions"));
 			services.Configure<OWMOptions>(Configuration.GetSection("OWMOptions"));

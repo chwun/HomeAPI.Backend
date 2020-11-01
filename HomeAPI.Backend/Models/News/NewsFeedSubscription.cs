@@ -1,10 +1,9 @@
-using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace HomeAPI.Backend.Models.Lighting
+namespace HomeAPI.Backend.Models.News
 {
-	public class LightScene
+	public class NewsFeedSubscription
 	{
 		[Key]
 		[DatabaseGenerated(DatabaseGeneratedOption.Identity)]
@@ -12,6 +11,6 @@ namespace HomeAPI.Backend.Models.Lighting
 
 		public string Name { get; set; }
 
-		public string Data { get; set; }
+		public string Url { get; set; }
 	}
 }
