@@ -15,7 +15,7 @@ namespace HomeAPI.Backend.Tests.Controllers
 		#region GetTimeSeries
 
 		[Fact]
-		public async System.Threading.Tasks.Task GetTimeSeries_InternalError()
+		public async Task GetTimeSeries_InternalError()
 		{
 			TimeSeriesRequest request = new TimeSeriesRequest()
 			{
@@ -43,7 +43,7 @@ namespace HomeAPI.Backend.Tests.Controllers
 		}
 
 		[Fact]
-		public async System.Threading.Tasks.Task GetTimeSeries_BadRequest()
+		public async Task GetTimeSeries_BadRequest()
 		{
 			TimeSeriesRequest request = new TimeSeriesRequest()
 			{
@@ -71,7 +71,7 @@ namespace HomeAPI.Backend.Tests.Controllers
 		}
 
 		[Fact]
-		public async System.Threading.Tasks.Task GetTimeSeries_RequestNull()
+		public async Task GetTimeSeries_RequestNull()
 		{
 			IInfluxDBProvider influxProvider = Substitute.For<IInfluxDBProvider>();
 			TimeSeriesController controller = new TimeSeriesController(influxProvider);
@@ -82,7 +82,7 @@ namespace HomeAPI.Backend.Tests.Controllers
 		}
 
 		[Fact]
-		public async System.Threading.Tasks.Task GetTimeSeries_SuccessAsync()
+		public async Task GetTimeSeries_Success()
 		{
 			TimeSeriesRequest request = new TimeSeriesRequest()
 			{

@@ -74,7 +74,7 @@ namespace HomeAPI.Backend.Controllers
 		[HttpPut("feeds/{id}")]
 		[ProducesResponseType(StatusCodes.Status200OK)]
 		[ProducesResponseType(StatusCodes.Status400BadRequest)]
-		public async Task<ActionResult<List<NewsFeedSubscription>>> UpdateNewsFeedSubscription(int id, [FromBody] NewsFeedSubscriptionUpdateDTO feedSubscriptionDTO)
+		public async Task<ActionResult<NewsFeedSubscription>> UpdateNewsFeedSubscription(int id, [FromBody] NewsFeedSubscriptionUpdateDTO feedSubscriptionDTO)
 		{
 			if (feedSubscriptionDTO == null)
 			{
@@ -92,7 +92,7 @@ namespace HomeAPI.Backend.Controllers
 		[HttpDelete("feeds/{id}")]
 		[ProducesResponseType(StatusCodes.Status204NoContent)]
 		[ProducesResponseType(StatusCodes.Status404NotFound)]
-		public async Task<ActionResult<List<NewsFeedSubscription>>> DeleteNewsFeedSubscription(int id)
+		public async Task<IActionResult> DeleteNewsFeedSubscription(int id)
 		{
 			var feedSubscription = await subscriptionRepository.GetAsync(id);
 			if (feedSubscription == null)
