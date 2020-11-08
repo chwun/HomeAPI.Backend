@@ -203,5 +203,51 @@ namespace HomeAPI.Backend.Tests.Controllers
 		}
 
 		#endregion
+
+		#region GetNewsFeedSubscriptionContent
+
+		[Fact]
+		public async Task GetNewsFeedSubscriptionContent_NotFound()
+		{
+			subscriptionRepository.GetAsync(Arg.Any<int>()).Returns((NewsFeedSubscription)null);
+			NewsController controller = new NewsController(mapper, rssFeedProvider, subscriptionRepository);
+
+			var result = await controller.GetNewsFeedSubscriptionContent(1);
+
+			Assert.IsType<NotFoundResult>(result.Result);
+		}
+
+		[Fact]
+		public async Task GetNewsFeedSubscriptionContent_Success()
+		{
+			subscriptionRepository.GetAsync(1).Returns(newsFeedSubscriptions[0]);
+			var newsFeedItems = new List<NewsFeedItemDTO>()
+			{
+				new NewsFeedItemDTO()
+				{
+					Id = "id1",
+					Summary = "summary1"
+				},
+				new NewsFeedItemDTO()
+				{
+					Id = "id2",
+					Summary = "summary2"
+				}
+			};
+			rssFeedProvider.ReadFeedContent("example.com").Returns(newsFeedItems);
+			NewsController controller = new NewsController(mapper, rssFeedProvider, subscriptionRepository);
+
+			var result = await controller.GetNewsFeedSubscriptionContent(1);
+
+			var okResult = Assert.IsType<OkObjectResult>(result.Result);
+			var resultObject = Assert.IsType<List<NewsFeedItemDTO>>(okResult.Value);
+			Assert.Equal(2, resultObject.Count);
+			Assert.Equal("id1", resultObject[0].Id);
+			Assert.Equal("summary1", resultObject[0].Summary);
+			Assert.Equal("id2", resultObject[1].Id);
+			Assert.Equal("summary2", resultObject[1].Summary);
+		}
+
+		#endregion
 	}
 }

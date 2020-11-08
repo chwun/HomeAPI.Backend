@@ -59,6 +59,7 @@ namespace HomeAPI.Backend
 			services.AddTransient<IInfluxDBProvider, InfluxDBProvider>();
 
 			services.AddScoped<IAsyncRepository<NewsFeedSubscription>, NewsFeedSubscriptionRepository>();
+			services.AddTransient<ISimpleFeedAccess, SimpleFeedAccess>();
 			services.AddTransient<IRssFeedProvider, RssFeedProvider>();
 
 			services.Configure<HueOptions>(Configuration.GetSection("HueOptions"));

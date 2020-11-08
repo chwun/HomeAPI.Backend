@@ -104,5 +104,21 @@ namespace HomeAPI.Backend.Controllers
 
 			return NoContent();
 		}
+
+		[HttpGet("feeds/{id}/content")]
+		[ProducesResponseType(StatusCodes.Status200OK)]
+		[ProducesResponseType(StatusCodes.Status404NotFound)]
+		public async Task<ActionResult<List<NewsFeedItemDTO>>> GetNewsFeedSubscriptionContent(int id)
+		{
+			var feedSubscription = await subscriptionRepository.GetAsync(id);
+			if (feedSubscription == null)
+			{
+				return NotFound();
+			}
+
+			var newsFeedItems = feedProvider.ReadFeedContent(feedSubscription.Url);
+
+			return Ok(newsFeedItems);
+		}
 	}
 }
