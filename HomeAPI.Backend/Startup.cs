@@ -69,6 +69,8 @@ namespace HomeAPI.Backend
 			services.AddControllers()
 				.AddNewtonsoftJson();
 
+			services.AddCors(options => options.AddPolicy("SPAPolicy", builder => builder.AllowAnyOrigin()));
+
 			services.AddHttpClient();
 		}
 
@@ -87,9 +89,11 @@ namespace HomeAPI.Backend
 				app.UseDeveloperExceptionPage();
 			}
 
-			app.UseHttpsRedirection();
+			// app.UseHttpsRedirection();
 
 			app.UseRouting();
+
+			app.UseCors("SPAPolicy");
 
 			app.UseAuthorization();
 
