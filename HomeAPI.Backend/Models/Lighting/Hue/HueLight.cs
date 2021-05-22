@@ -29,7 +29,7 @@ namespace HomeAPI.Backend.Models.Lighting.Hue
 					"dimmable light" => LightType.HueDimmableLight,
 					"extended color light" => LightType.HueExtendedColorLight,
 					"color temperature light" => LightType.HueColorTemperatureLight,
-					_ => LightType.Undefined
+					_ => LightType.None
 				},
 				State = new LightState()
 				{

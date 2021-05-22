@@ -2,7 +2,7 @@ namespace HomeAPI.Backend.Models.Lighting
 {
 	public enum LightType
 	{
-		Undefined,
+		None,
 		HueDimmableLight,
 		HueExtendedColorLight,
 		HueColorTemperatureLight
