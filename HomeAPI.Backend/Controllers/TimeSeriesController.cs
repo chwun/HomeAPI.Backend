@@ -22,12 +22,26 @@ namespace HomeAPI.Backend.Controllers
 		[ProducesResponseType(StatusCodes.Status400BadRequest)]
 		[ProducesResponseType(StatusCodes.Status404NotFound)]
 		[ProducesResponseType(StatusCodes.Status200OK)]
-		public async Task<ActionResult<List<DataPoint>>> GetTimeSeries([FromBody] TimeSeriesRequest request)
+		public async Task<ActionResult<List<DataPoint>>> GetTimeSeries(
+			[FromQuery] string measurementName,
+			[FromQuery] string location,
+			[FromQuery] TimeSeriesRange range)
 		{
-			if (request == null)
+			if (measurementName is null || location is null)
 			{
 				return BadRequest();
 			}
+
+			TimeSeriesRequest request = new()
+			{
+				MeasurementName = measurementName,
+				Tags = new()
+				{
+					["location"] = location
+				},
+				ValueType = TimeSeriesValueType.Float,
+				Range = range
+			};
 
 			var timeSeriesResponse = await influxDbProvider.GetTimeSeriesAsync(request);
 			var status = timeSeriesResponse.Status;
