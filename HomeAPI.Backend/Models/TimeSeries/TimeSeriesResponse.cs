@@ -6,10 +6,6 @@ namespace HomeAPI.Backend.Models.TimeSeries
 	{
 		public TimeSeriesResponseStatus Status { get; set; }
 
-		public List<DataPoint> DataPoints { get; set; }
-
-		public TimeSeriesResponse()
-		{
-		}
+		public TimeSeriesResult TimeSeriesResult { get; set; }
 	}
 }

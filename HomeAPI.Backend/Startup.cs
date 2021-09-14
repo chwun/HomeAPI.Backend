@@ -65,6 +65,7 @@ namespace HomeAPI.Backend
 			services.Configure<HueOptions>(Configuration.GetSection("HueOptions"));
 			services.Configure<OWMOptions>(Configuration.GetSection("OWMOptions"));
 			services.Configure<InfluxDBOptions>(Configuration.GetSection("InfluxDBOptions"));
+			services.Configure<PreconfiguredTimeSeries>(Configuration.GetSection("PreconfiguredTimeSeries"));
 
 			services.AddControllers()
 				.AddNewtonsoftJson();

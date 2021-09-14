@@ -35,7 +35,7 @@ namespace HomeAPI.Backend.Providers.TimeSeries
 			apiUrl += "/api/v2";
 		}
 
-		public async Task<TimeSeriesResponse> GetTimeSeriesAsync(TimeSeriesRequest request)
+		public async Task<TimeSeriesResponse> GetTimeSeriesAsync(TimeSeriesRequest request, string displayName)
 		{
 			TimeSeriesResponse response = new TimeSeriesResponse();
 
@@ -63,12 +63,16 @@ namespace HomeAPI.Backend.Providers.TimeSeries
 				var httpResponseMessage = await httpClient.SendAsync(httpRequest);
 				string queryResult = await httpResponseMessage.Content.ReadAsStringAsync();
 
-				response.DataPoints = queryResultParser.ParseQueryResult(queryResult, request.ValueType);
 				response.Status = TimeSeriesResponseStatus.Success;
+				response.TimeSeriesResult = new TimeSeriesResult()
+				{
+					DisplayName = displayName,
+					DataPoints = queryResultParser.ParseQueryResult(queryResult, request.ValueType)
+				};
 			}
 			catch
 			{
-				response.DataPoints = null;
+				response.TimeSeriesResult = null;
 				response.Status = TimeSeriesResponseStatus.InternalError;
 			}
 
