@@ -49,11 +49,11 @@ namespace HomeAPI.Backend.Tests.Providers.TimeSeries
 			queryResultParser.ParseQueryResult(httpResponseContent, TimeSeriesValueType.Float).Returns(x => throw new Exception());
 			InfluxDBProvider provider = new InfluxDBProvider(clientFactory, optionsMonitor, fluxHelper, queryResultParser);
 
-			var result = await provider.GetTimeSeriesAsync(request);
+			var result = await provider.GetTimeSeriesAsync(request, "xyz");
 
 			Assert.NotNull(result);
 			Assert.Equal(TimeSeriesResponseStatus.InternalError, result.Status);
-			Assert.Null(result.DataPoints);
+			Assert.Null(result.TimeSeriesResult); 
 		}
 
 		[Fact]
@@ -93,11 +93,14 @@ namespace HomeAPI.Backend.Tests.Providers.TimeSeries
 			queryResultParser.ParseQueryResult(httpResponseContent, TimeSeriesValueType.Float).Returns(dataPoints);
 			InfluxDBProvider provider = new InfluxDBProvider(clientFactory, optionsMonitor, fluxHelper, queryResultParser);
 
-			var result = await provider.GetTimeSeriesAsync(request);
+			var result = await provider.GetTimeSeriesAsync(request, "xyz");
 
 			Assert.NotNull(result);
 			Assert.Equal(TimeSeriesResponseStatus.Success, result.Status);
-			Assert.Equal(dataPoints, result.DataPoints);
+			Assert.NotNull(result.TimeSeriesResult);
+			Assert.Equal("xyz", result.TimeSeriesResult.DisplayName);
+			Assert.NotNull(result.TimeSeriesResult.DataPoints);
+			Assert.Equal(dataPoints, result.TimeSeriesResult.DataPoints);
 		}
 
 		#endregion

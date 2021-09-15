@@ -10,7 +10,7 @@ namespace HomeAPI.Backend.Tests.Models.Lighting.Hue
 		[InlineData("Dimmable Light", LightType.HueDimmableLight)]
 		[InlineData("Extended Color Light", LightType.HueExtendedColorLight)]
 		[InlineData("Color Temperature Light", LightType.HueColorTemperatureLight)]
-		[InlineData("Unknown Light Type", LightType.Undefined)]
+		[InlineData("Unknown Light Type", LightType.None)]
 		public void ToLight(string lightTypeName, LightType expectedLightType)
 		{
 			var hueLight = new HueLight()
