@@ -72,8 +72,6 @@ namespace HomeAPI.Backend.Providers.Lighting
 		{
 			string url = $"{apiUrl}/lights/{lightId}/state";
 
-			bool success = false;
-
 			try
 			{
 				var light = await GetLightByIdAsync(lightId);
@@ -83,31 +81,45 @@ namespace HomeAPI.Backend.Providers.Lighting
 				// first send only on/off state to Hue bridge, because otherwise Hue will respond with error:
 				var hueOnOffLightStateUpdate = lightStateUpdateFactory.CreateOnOffLightStateUpdateFromLightState(stateUpdate);
 				var jsonOnOff = JsonConvert.SerializeObject(hueOnOffLightStateUpdate);
-				await httpClient.PutAsync(url, new StringContent(jsonOnOff));
+
+				var response = await httpClient.PutAsync(url, new StringContent(jsonOnOff));
+				var responseJson = await response.Content.ReadAsStringAsync();
+				var updateResults = JsonConvert.DeserializeObject<HueLightStateUpdateResult[]>(responseJson);
+
+				bool successOnOff = (updateResults.Length > 0) ? (updateResults[0].Success != null) : false;
+
+				if (!successOnOff)
+				{
+					return false;
+				}
 
 				// only proceed if light gets switched on, because otherwise Hue will respond with error:
 				if (hueOnOffLightStateUpdate.On)
 				{
 					var hueLightStateUpdate = lightStateUpdateFactory.CreateFromLightState(light.Type, stateUpdate);
+
+					// if light state update is only on/off, there is no need to proceed:
+					if (hueLightStateUpdate is HueLightStateUpdateOnOff)
+					{
+						return true;
+					}
+
 					var json = JsonConvert.SerializeObject(hueLightStateUpdate);
-					var response = await httpClient.PutAsync(url, new StringContent(json));
 
-					var responseJson = await response.Content.ReadAsStringAsync();
+					response = await httpClient.PutAsync(url, new StringContent(json));
+					responseJson = await response.Content.ReadAsStringAsync();
+					updateResults = JsonConvert.DeserializeObject<HueLightStateUpdateResult[]>(responseJson);
 
-					var updateResults = JsonConvert.DeserializeObject<HueLightStateUpdateResult[]>(responseJson);
-
-					success = (updateResults.Length > 0) ? (updateResults[0].Success != null) : false;
+					return (updateResults.Length > 0) ? (updateResults[0].Success != null) : false;
 				}
-				else
-				{
-					success = true;
-				}
+
+				return true;
+
 			}
 			catch (Exception)
 			{
+				return false;
 			}
-
-			return success;
 		}
 
 		public async Task<bool> ApplyLightSceneAsync(LightScene scene)

@@ -5,6 +5,7 @@ namespace HomeAPI.Backend.Models.Lighting
 		None,
 		HueDimmableLight,
 		HueExtendedColorLight,
-		HueColorTemperatureLight
+		HueColorTemperatureLight,
+		OnOffPlug
 	}
 }

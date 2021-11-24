@@ -29,6 +29,7 @@ namespace HomeAPI.Backend.Models.Lighting.Hue
 					"dimmable light" => LightType.HueDimmableLight,
 					"extended color light" => LightType.HueExtendedColorLight,
 					"color temperature light" => LightType.HueColorTemperatureLight,
+					"on/off plug-in unit" => LightType.OnOffPlug,
 					_ => LightType.None
 				},
 				State = new LightState()

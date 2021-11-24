@@ -25,18 +25,19 @@ namespace HomeAPI.Backend.Models.Lighting.Hue
 				LightType.HueDimmableLight => CreateDimmableLightStateUpdate(stateUpdate),
 				LightType.HueExtendedColorLight => CreateExtendedColorLightStateUpdate(stateUpdate),
 				LightType.HueColorTemperatureLight => CreateColorTemperatureLightStateUpdate(stateUpdate),
+				LightType.OnOffPlug => CreateOnOffLightStateUpdateFromLightState(stateUpdate),
 				_ => null
 			};
 		}
 
-		public HueOnOffLightStateUpdate CreateOnOffLightStateUpdateFromLightState(LightStateUpdate stateUpdate)
+		public HueLightStateUpdateOnOff CreateOnOffLightStateUpdateFromLightState(LightStateUpdate stateUpdate)
 		{
 			if (stateUpdate == null)
 			{
 				return null;
 			}
 
-			return new HueOnOffLightStateUpdate() { On = stateUpdate.On };
+			return new HueLightStateUpdateOnOff() { On = stateUpdate.On };
 		}
 
 		private HueLightStateUpdateDimmable CreateDimmableLightStateUpdate(LightStateUpdate stateUpdate)

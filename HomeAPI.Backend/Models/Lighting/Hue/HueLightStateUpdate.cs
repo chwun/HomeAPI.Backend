@@ -7,8 +7,5 @@ namespace HomeAPI.Backend.Models.Lighting.Hue
 	{
 		[JsonProperty("on")]
 		public bool On { get; set; }
-
-		[JsonProperty("bri")]
-		public int Brightness { get; set; }
 	}
 }

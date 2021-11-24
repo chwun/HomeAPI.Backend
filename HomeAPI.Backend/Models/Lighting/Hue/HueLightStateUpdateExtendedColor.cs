@@ -4,6 +4,9 @@ namespace HomeAPI.Backend.Models.Lighting.Hue
 {
 	public class HueLightStateUpdateExtendedColor : HueLightStateUpdate
 	{
+		[JsonProperty("bri")]
+		public int Brightness { get; set; }
+
 		[JsonProperty("hue")]
 		public int Hue { get; set; }
 
