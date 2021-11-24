@@ -83,6 +83,21 @@ namespace HomeAPI.Backend.Tests.Models.Lighting.Hue
 			Assert.Equal(55, result.ColorTemperature);
 		}
 
+		[Fact]
+		public void CreateFromLightState_OnOffPlug()
+		{
+			IHueLightStateUpdateFactory lightStateUpdateFactory = new HueLightStateUpdateFactory();
+
+			var lightStateUpdate = new LightStateUpdate()
+			{
+				On = true
+			};
+
+			var result = lightStateUpdateFactory.CreateFromLightState(LightType.OnOffPlug, lightStateUpdate) as HueLightStateUpdateOnOff;
+
+			Assert.True(result.On);
+		}
+
 		#endregion
 
 		#region CreateOnOffLightStateUpdateFromLightState
@@ -145,6 +160,20 @@ namespace HomeAPI.Backend.Tests.Models.Lighting.Hue
 				ColorTemperature = 55,
 				Saturation = 27,
 				Hue = 8000
+			};
+
+			var result = lightStateUpdateFactory.CreateOnOffLightStateUpdateFromLightState(lightStateUpdate);
+
+			Assert.True(result.On);
+		}
+
+		[Fact]
+		public void CreateOnOffLightStateUpdateFromLightState_OnOffPlug()
+		{
+			IHueLightStateUpdateFactory lightStateUpdateFactory = new HueLightStateUpdateFactory();
+			var lightStateUpdate = new LightStateUpdate()
+			{
+				On = true
 			};
 
 			var result = lightStateUpdateFactory.CreateOnOffLightStateUpdateFromLightState(lightStateUpdate);

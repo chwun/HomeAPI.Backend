@@ -176,7 +176,7 @@ namespace HomeAPI.Backend.Tests.Providers.Lighting
 				Brightness = 123,
 				ColorTemperature = 102
 			});
-			lightStateUpdateFactory.CreateOnOffLightStateUpdateFromLightState(Arg.Any<LightStateUpdate>()).Returns(new HueOnOffLightStateUpdate() { On = true });
+			lightStateUpdateFactory.CreateOnOffLightStateUpdateFromLightState(Arg.Any<LightStateUpdate>()).Returns(new HueLightStateUpdateOnOff() { On = true });
 			var hueLightProvider = new HueLightProvider(clientFactory, optionsMonitor, lightStateUpdateFactory);
 
 			var result = await hueLightProvider.SetLightStateAsync(4, new LightStateUpdate());
@@ -212,7 +212,7 @@ namespace HomeAPI.Backend.Tests.Providers.Lighting
 				Brightness = 123,
 				ColorTemperature = 102
 			});
-			lightStateUpdateFactory.CreateOnOffLightStateUpdateFromLightState(Arg.Any<LightStateUpdate>()).Returns(new HueOnOffLightStateUpdate() { On = false });
+			lightStateUpdateFactory.CreateOnOffLightStateUpdateFromLightState(Arg.Any<LightStateUpdate>()).Returns(new HueLightStateUpdateOnOff() { On = false });
 			var hueLightProvider = new HueLightProvider(clientFactory, optionsMonitor, lightStateUpdateFactory);
 
 			var result = await hueLightProvider.SetLightStateAsync(4, new LightStateUpdate());
@@ -318,7 +318,7 @@ namespace HomeAPI.Backend.Tests.Providers.Lighting
 				Brightness = 123,
 				ColorTemperature = 102
 			});
-			lightStateUpdateFactory.CreateOnOffLightStateUpdateFromLightState(Arg.Any<LightStateUpdate>()).Returns(new HueOnOffLightStateUpdate() { On = true });
+			lightStateUpdateFactory.CreateOnOffLightStateUpdateFromLightState(Arg.Any<LightStateUpdate>()).Returns(new HueLightStateUpdateOnOff() { On = true });
 			var hueLightProvider = new HueLightProvider(clientFactory, optionsMonitor, lightStateUpdateFactory);
 			LightScene scene = new LightScene()
 			{
@@ -355,7 +355,7 @@ namespace HomeAPI.Backend.Tests.Providers.Lighting
 			optionsMonitor.CurrentValue.Returns(hueOptions);
 			var lightStateUpdateFactory = Substitute.For<IHueLightStateUpdateFactory>();
 			lightStateUpdateFactory.CreateFromLightState(Arg.Any<LightType>(), Arg.Any<LightStateUpdate>()).Returns(x => throw new Exception());
-			lightStateUpdateFactory.CreateOnOffLightStateUpdateFromLightState(Arg.Any<LightStateUpdate>()).Returns(new HueOnOffLightStateUpdate() { On = true });
+			lightStateUpdateFactory.CreateOnOffLightStateUpdateFromLightState(Arg.Any<LightStateUpdate>()).Returns(new HueLightStateUpdateOnOff() { On = true });
 			var hueLightProvider = new HueLightProvider(clientFactory, optionsMonitor, lightStateUpdateFactory);
 			LightScene scene = new LightScene()
 			{
@@ -397,7 +397,7 @@ namespace HomeAPI.Backend.Tests.Providers.Lighting
 				Brightness = 123,
 				ColorTemperature = 102
 			});
-			lightStateUpdateFactory.CreateOnOffLightStateUpdateFromLightState(Arg.Any<LightStateUpdate>()).Returns(new HueOnOffLightStateUpdate() { On = true });
+			lightStateUpdateFactory.CreateOnOffLightStateUpdateFromLightState(Arg.Any<LightStateUpdate>()).Returns(new HueLightStateUpdateOnOff() { On = true });
 			var hueLightProvider = new HueLightProvider(clientFactory, optionsMonitor, lightStateUpdateFactory);
 			LightScene scene = new LightScene()
 			{
