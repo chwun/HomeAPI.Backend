@@ -1,5 +1,6 @@
 using System.Diagnostics.CodeAnalysis;
 using AutoMapper;
+using HomeAPI.Backend.Models.Accounting;
 using HomeAPI.Backend.Models.News;
 using SimpleFeedReader;
 
@@ -12,6 +13,8 @@ namespace HomeAPI.Backend.Models
 		{
 			CreateMap<NewsFeedSubscriptionUpdateDTO, NewsFeedSubscription>();
 			CreateMap<FeedItem, NewsFeedItemDTO>();
+
+			CreateMap<AccountingCategory, AccountingCategoryDTO>().ReverseMap();
 		}
 	}
 }

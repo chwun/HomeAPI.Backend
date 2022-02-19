@@ -20,10 +20,10 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using AutoMapper;
 using HomeAPI.Backend.Models.News;
 using HomeAPI.Backend.Data.News;
 using HomeAPI.Backend.Providers.News;
+using HomeAPI.Backend.Data.Accounting;
 
 namespace HomeAPI.Backend
 {
@@ -61,6 +61,8 @@ namespace HomeAPI.Backend
 			services.AddScoped<IAsyncRepository<NewsFeedSubscription>, NewsFeedSubscriptionRepository>();
 			services.AddTransient<ISimpleFeedAccess, SimpleFeedAccess>();
 			services.AddTransient<IRssFeedProvider, RssFeedProvider>();
+
+			services.AddScoped<IAccountingRepository, AccountingRepository>();
 
 			services.Configure<HueOptions>(Configuration.GetSection("HueOptions"));
 			services.Configure<OWMOptions>(Configuration.GetSection("OWMOptions"));

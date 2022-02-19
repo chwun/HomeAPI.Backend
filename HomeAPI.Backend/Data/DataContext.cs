@@ -16,6 +16,8 @@ namespace HomeAPI.Backend.Data
 
 		public DbSet<NewsFeedSubscription> NewsFeedSubscriptions { get; set; }
 
-		public DbSet<AccountingCategory> AccoutingCategories {get;set;}
+		public DbSet<AccountingCategory> AccountingCategories { get; set; }
+		public DbSet<AccountingSubCategory> AccountingSubCategories { get; set; }
+		public DbSet<AccountingItem> AccountingItems { get; set; }
 	}
 }
