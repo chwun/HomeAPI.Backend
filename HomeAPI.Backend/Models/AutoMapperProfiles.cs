@@ -14,7 +14,8 @@ namespace HomeAPI.Backend.Models
 			CreateMap<NewsFeedSubscriptionUpdateDTO, NewsFeedSubscription>();
 			CreateMap<FeedItem, NewsFeedItemDTO>();
 
-			CreateMap<AccountingCategory, AccountingCategoryDTO>().ReverseMap();
+			CreateMap<AccountingCategory, AccountingCategoryDto>().ReverseMap();
+			CreateMap<AccountingSubCategory, AccountingSubCategoryDto>().ReverseMap();
 		}
 	}
 }

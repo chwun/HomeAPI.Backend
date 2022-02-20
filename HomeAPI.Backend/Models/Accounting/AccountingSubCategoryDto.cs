@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace HomeAPI.Backend.Models.Accounting
 {
-	public class AccountingCategoryDto
+	public class AccountingSubCategoryDto
 	{
 		public int Id { get; set; }
 

@@ -5,10 +5,10 @@ using Microsoft.EntityFrameworkCore;
 
 namespace HomeAPI.Backend.Data.Accounting
 {
-	public class AccountingRepository : IAccountingRepository
+	public class AccountingCategoriesRepository : IAccountingCategoriesRepository
 	{
 		private readonly DataContext context;
-		public AccountingRepository(DataContext context)
+		public AccountingCategoriesRepository(DataContext context)
 		{
 			this.context = context;
 		}
@@ -21,6 +21,14 @@ namespace HomeAPI.Backend.Data.Accounting
 		public async Task<AccountingCategory> GetCategory(int id)
 		{
 			return await context.AccountingCategories.AsNoTracking().FirstOrDefaultAsync(x => x.Id == id);
+		}
+
+		public async Task<AccountingCategory> GetCategoryWithRelatedData(int id)
+		{
+			return await context.AccountingCategories
+				.AsNoTracking()
+				.Include(x => x.SubCategories)
+				.FirstOrDefaultAsync(x => x.Id == id);
 		}
 
 		public async Task AddCategory(AccountingCategory category)
