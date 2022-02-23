@@ -27,105 +27,104 @@ using HomeAPI.Backend.Data.Accounting;
 
 namespace HomeAPI.Backend
 {
-	[ExcludeFromCodeCoverage]
-	public class Startup
-	{
-		public Startup(IConfiguration configuration)
-		{
-			Configuration = configuration;
-		}
+    [ExcludeFromCodeCoverage]
+    public class Startup
+    {
+        public Startup(IConfiguration configuration)
+        {
+            Configuration = configuration;
+        }
 
-		public IConfiguration Configuration { get; }
+        public IConfiguration Configuration { get; }
 
-		// This method gets called by the runtime. Use this method to add services to the container.
-		public void ConfigureServices(IServiceCollection services)
-		{
-			AddDbContext(services);
+        // This method gets called by the runtime. Use this method to add services to the container.
+        public void ConfigureServices(IServiceCollection services)
+        {
+            AddDbContext(services);
 
-			services.AddAutoMapper(typeof(Startup));
+            services.AddAutoMapper(typeof(Startup));
 
-			services.AddTransient<IDateTimeProvider, DateTimeProvider>();
+            services.AddTransient<IDateTimeProvider, DateTimeProvider>();
 
-			services.AddScoped<IAsyncRepository<LightScene>, LightSceneRepository>();
-			services.AddTransient<IHueLightProvider, HueLightProvider>();
-			services.AddTransient<IHueLightStateUpdateFactory, HueLightStateUpdateFactory>();
+            services.AddScoped<IAsyncRepository<LightScene>, LightSceneRepository>();
+            services.AddTransient<IHueLightProvider, HueLightProvider>();
+            services.AddTransient<IHueLightStateUpdateFactory, HueLightStateUpdateFactory>();
 
-			services.AddTransient<IHueSensorProvider, HueSensorProvider>();
+            services.AddTransient<IHueSensorProvider, HueSensorProvider>();
 
-			services.AddTransient<IOWMProvider, OWMProvider>();
+            services.AddTransient<IOWMProvider, OWMProvider>();
 
-			services.AddTransient<IFluxHelper, FluxHelper>();
-			services.AddTransient<IInfluxDBQueryResultParser, InfluxDBQueryResultParser>();
-			services.AddTransient<IInfluxDBProvider, InfluxDBProvider>();
+            services.AddTransient<IFluxHelper, FluxHelper>();
+            services.AddTransient<IInfluxDBQueryResultParser, InfluxDBQueryResultParser>();
+            services.AddTransient<IInfluxDBProvider, InfluxDBProvider>();
 
-			services.AddScoped<IAsyncRepository<NewsFeedSubscription>, NewsFeedSubscriptionRepository>();
-			services.AddTransient<ISimpleFeedAccess, SimpleFeedAccess>();
-			services.AddTransient<IRssFeedProvider, RssFeedProvider>();
+            services.AddScoped<IAsyncRepository<NewsFeedSubscription>, NewsFeedSubscriptionRepository>();
+            services.AddTransient<ISimpleFeedAccess, SimpleFeedAccess>();
+            services.AddTransient<IRssFeedProvider, RssFeedProvider>();
 
-			services.AddScoped<IAccountingCategoriesRepository, AccountingCategoriesRepository>();
-			services.AddScoped<IAccountingSubCategoriesRepository, AccountingSubCategoriesRepository>();
+            services.AddScoped<IAccountingCategoriesRepository, AccountingCategoriesRepository>();
 
-			services.Configure<HueOptions>(Configuration.GetSection("HueOptions"));
-			services.Configure<OWMOptions>(Configuration.GetSection("OWMOptions"));
-			services.Configure<InfluxDBOptions>(Configuration.GetSection("InfluxDBOptions"));
-			services.Configure<PreconfiguredTimeSeries>(Configuration.GetSection("PreconfiguredTimeSeries"));
+            services.Configure<HueOptions>(Configuration.GetSection("HueOptions"));
+            services.Configure<OWMOptions>(Configuration.GetSection("OWMOptions"));
+            services.Configure<InfluxDBOptions>(Configuration.GetSection("InfluxDBOptions"));
+            services.Configure<PreconfiguredTimeSeries>(Configuration.GetSection("PreconfiguredTimeSeries"));
 
-			services.AddControllers()
-				.AddNewtonsoftJson();
+            services.AddControllers()
+                .AddNewtonsoftJson();
 
-			services.AddCors(options => options.AddPolicy("SPAPolicy", builder => builder.AllowAnyOrigin()));
+            services.AddCors(options => options.AddPolicy("SPAPolicy", builder => builder.AllowAnyOrigin()));
 
-			services.AddHttpClient();
-		}
+            services.AddHttpClient();
+        }
 
-		// This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-		public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
-		{
-			app.UseForwardedHeaders(new ForwardedHeadersOptions
-			{
-				ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
-			});
+        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        {
+            app.UseForwardedHeaders(new ForwardedHeadersOptions
+            {
+                ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
+            });
 
-			app.UseAuthentication();
+            app.UseAuthentication();
 
-			if (env.IsDevelopment())
-			{
-				app.UseDeveloperExceptionPage();
-			}
+            if (env.IsDevelopment())
+            {
+                app.UseDeveloperExceptionPage();
+            }
 
-			// app.UseHttpsRedirection();
+            // app.UseHttpsRedirection();
 
-			app.UseRouting();
+            app.UseRouting();
 
-			app.UseCors("SPAPolicy");
+            app.UseCors("SPAPolicy");
 
-			app.UseAuthorization();
+            app.UseAuthorization();
 
-			app.UseEndpoints(endpoints =>
-			{
-				endpoints.MapControllers();
-			});
-		}
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapControllers();
+            });
+        }
 
-		private void AddDbContext(IServiceCollection services)
-		{
-			string dbPath = Path.Combine(Environment.GetEnvironmentVariable(RuntimeInformation.IsOSPlatform(OSPlatform.Windows) ? "LocalAppData" : "HOME"), "HomeAPI_Data");
-			if (!dbPath.EndsWith(Path.DirectorySeparatorChar) && !dbPath.EndsWith(Path.AltDirectorySeparatorChar))
-			{
-				dbPath += Path.DirectorySeparatorChar;
-			}
+        private void AddDbContext(IServiceCollection services)
+        {
+            string dbPath = Path.Combine(Environment.GetEnvironmentVariable(RuntimeInformation.IsOSPlatform(OSPlatform.Windows) ? "LocalAppData" : "HOME"), "HomeAPI_Data");
+            if (!dbPath.EndsWith(Path.DirectorySeparatorChar) && !dbPath.EndsWith(Path.AltDirectorySeparatorChar))
+            {
+                dbPath += Path.DirectorySeparatorChar;
+            }
 
-			Console.WriteLine($"DB path: {dbPath}");
+            Console.WriteLine($"DB path: {dbPath}");
 
-			if (!Directory.Exists(dbPath))
-			{
-				Directory.CreateDirectory(dbPath);
-				Console.WriteLine("DB directory created");
-			}
+            if (!Directory.Exists(dbPath))
+            {
+                Directory.CreateDirectory(dbPath);
+                Console.WriteLine("DB directory created");
+            }
 
-			string connectionString = string.Format(Configuration.GetConnectionString("Data"), dbPath);
+            string connectionString = string.Format(Configuration.GetConnectionString("Data"), dbPath);
 
-			services.AddDbContext<DataContext>(options => options.UseSqlite(connectionString));
-		}
-	}
+            services.AddDbContext<DataContext>(options => options.UseSqlite(connectionString));
+        }
+    }
 }

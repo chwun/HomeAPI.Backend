@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace HomeAPI.Backend.Models.Accounting
 {
-    public class AccountingCategoryDto
+    public class AccountingCategoryTreeDto
     {
         public int Id { get; set; }
 
@@ -11,6 +11,6 @@ namespace HomeAPI.Backend.Models.Accounting
         [StringLength(100, MinimumLength = 1)]
         public string Name { get; set; }
 
-        public int? ParentCategoryId { get; set; }
+        public ICollection<AccountingCategoryTreeDto> SubCategories { get; set; }
     }
 }

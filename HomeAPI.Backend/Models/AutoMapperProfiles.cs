@@ -6,16 +6,17 @@ using SimpleFeedReader;
 
 namespace HomeAPI.Backend.Models
 {
-	[ExcludeFromCodeCoverage]
-	public class AutoMapperProfiles : Profile
-	{
-		public AutoMapperProfiles()
-		{
-			CreateMap<NewsFeedSubscriptionUpdateDTO, NewsFeedSubscription>();
-			CreateMap<FeedItem, NewsFeedItemDTO>();
+    [ExcludeFromCodeCoverage]
+    public class AutoMapperProfiles : Profile
+    {
+        public AutoMapperProfiles()
+        {
+            CreateMap<NewsFeedSubscriptionUpdateDTO, NewsFeedSubscription>();
+            CreateMap<FeedItem, NewsFeedItemDTO>();
 
-			CreateMap<AccountingCategory, AccountingCategoryDto>().ReverseMap();
-			CreateMap<AccountingSubCategory, AccountingSubCategoryDto>().ReverseMap();
-		}
-	}
+            CreateMap<AccountingCategory, AccountingCategoryDto>().ReverseMap();
+            CreateMap<AccountingCategory, AccountingCategoryUpdateDto>().ReverseMap();
+            CreateMap<AccountingCategory, AccountingCategoryTreeDto>().ReverseMap();
+        }
+    }
 }

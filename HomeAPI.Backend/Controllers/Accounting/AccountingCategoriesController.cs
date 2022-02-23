@@ -8,157 +8,127 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace HomeAPI.Backend.Controllers.Accounting
 {
-	[Route("api/accounting")]
-	[ApiController]
-	public class AccountingCategoriesController : ControllerBase
-	{
-		private readonly IAccountingCategoriesRepository repository;
-		private readonly IMapper mapper;
+    [Route("api/accounting")]
+    [ApiController]
+    public class AccountingCategoriesController : ControllerBase
+    {
+        private readonly IAccountingCategoriesRepository repository;
+        private readonly IMapper mapper;
 
-		public AccountingCategoriesController(IAccountingCategoriesRepository repository, IMapper mapper)
-		{
-			this.repository = repository;
-			this.mapper = mapper;
-		}
+        public AccountingCategoriesController(IAccountingCategoriesRepository repository, IMapper mapper)
+        {
+            this.repository = repository;
+            this.mapper = mapper;
+        }
 
-		[HttpGet("categories")]
-		public async Task<ActionResult<List<AccountingCategoryDto>>> GetCategories()
-		{
-			var categories = await repository.GetAllCategories();
+        [HttpGet("categories")]
+        public async Task<ActionResult<List<AccountingCategoryDto>>> GetCategories([FromQuery] bool asTree)
+        {
+            var categories = asTree
+                ? await repository.GetCategoriesAsTree()
+                : await repository.GetCategories();
 
-			if (categories is null)
-			{
-				return StatusCode(StatusCodes.Status500InternalServerError);
-			}
+            if (categories is null)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
 
-			var categoriesDtos = mapper.Map<List<AccountingCategory>, List<AccountingCategoryDto>>(categories);
+            if (asTree)
+            {
+                return Ok(mapper.Map<List<AccountingCategory>, List<AccountingCategoryTreeDto>>(categories));
+            }
+            else
+            {
+                return Ok(mapper.Map<List<AccountingCategory>, List<AccountingCategoryDto>>(categories));
+            }
+        }
 
-			return Ok(categoriesDtos);
-		}
+        [HttpGet("categories/{id:int}")]
+        public async Task<ActionResult<AccountingCategoryDto>> GetCategory(int id)
+        {
+            var category = await repository.GetCategory(id);
 
-		[HttpGet("categories/{id:int}")]
-		public async Task<ActionResult<AccountingCategoryDto>> GetCategory(int id)
-		{
-			var category = await repository.GetCategory(id);
+            if (category is null)
+            {
+                return NotFound();
+            }
 
-			if (category is null)
-			{
-				return NotFound();
-			}
+            var categoryDto = mapper.Map<AccountingCategory, AccountingCategoryDto>(category);
 
-			var categoryDto = mapper.Map<AccountingCategory, AccountingCategoryDto>(category);
+            return Ok(categoryDto);
+        }
 
-			return Ok(categoryDto);
-		}
+        [HttpPost("categories")]
+        public async Task<ActionResult<AccountingCategoryDto>> AddCategory(
+            [FromBody] AccountingCategoryUpdateDto categoryDto,
+            [FromQuery] int parentId)
+        {
+            var category = mapper.Map<AccountingCategoryUpdateDto, AccountingCategory>(categoryDto);
 
-		[HttpPost("categories")]
-		public async Task<ActionResult<AccountingCategoryDto>> CreateCategory([FromBody] AccountingCategoryDto categoryDto)
-		{
-			var category = mapper.Map<AccountingCategoryDto, AccountingCategory>(categoryDto);
+            if (category is null)
+            {
+                return BadRequest();
+            }
 
-			if (category is null)
-			{
-				return BadRequest();
-			}
+            if (parentId > 0)
+            {
+                var parentCategory = await repository.GetCategory(parentId);
 
-			await repository.AddCategory(category);
+                if (parentCategory is null)
+                {
+                    return BadRequest();
+                }
 
-			if (category.Id <= 0)
-			{
-				return StatusCode(StatusCodes.Status500InternalServerError);
-			}
+                category.ParentCategory = parentCategory;
+            }
 
-			categoryDto = mapper.Map<AccountingCategory, AccountingCategoryDto>(category);
+            await repository.AddCategory(category);
 
-			return CreatedAtAction(nameof(GetCategory), new { id = category.Id }, categoryDto);
-		}
+            if (category.Id <= 0)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
 
-		[HttpPut("categories/{id:int}")]
-		public async Task<IActionResult> UpdateCategory(int id, [FromBody] AccountingCategoryDto categoryDto)
-		{
-			if (categoryDto is null || categoryDto.Id != id)
-			{
-				return BadRequest();
-			}
+            var resultCategoryDto = mapper.Map<AccountingCategory, AccountingCategoryDto>(category);
 
-			var category = await repository.GetCategory(id);
-			if (category is null)
-			{
-				return NotFound();
-			}
+            return CreatedAtAction(nameof(GetCategory), new { id = resultCategoryDto.Id }, resultCategoryDto);
+        }
 
-			category = mapper.Map<AccountingCategoryDto, AccountingCategory>(categoryDto);
+        [HttpPut("categories/{id:int}")]
+        public async Task<IActionResult> UpdateCategory(int id, [FromBody] AccountingCategoryUpdateDto categoryDto)
+        {
+            if (categoryDto is null)
+            {
+                return BadRequest();
+            }
 
-			await repository.UpdateCategory(category);
+            var category = await repository.GetCategory(id);
+            if (category is null)
+            {
+                return NotFound();
+            }
 
-			return Ok();
-		}
+            category.Update(categoryDto);
+            await repository.UpdateCategory(category);
 
-		[HttpDelete("categories/{id:int}")]
-		public async Task<IActionResult> DeleteCategory(int id)
-		{
-			var category = await repository.GetCategory(id);
+            return Ok();
+        }
 
-			if (category is null)
-			{
-				return NotFound();
-			}
+        [HttpDelete("categories/{id:int}")]
+        public async Task<IActionResult> DeleteCategory(int id)
+        {
+            var category = await repository.GetCategoryWithSubCategories(id);
 
-			await repository.DeleteCategory(category);
+            if (category is null)
+            {
+                return NotFound();
+            }
 
-			return Ok();
-		}
+            // TODO: delete sub categories?!
 
-		[HttpGet("categories/{categoryId:int}/subcategories")]
-		public async Task<ActionResult<ICollection<AccountingSubCategoryDto>>> GetSubCategoriesOfCategory(int categoryId)
-		{
-			var category = await repository.GetCategoryWithRelatedData(categoryId);
+            await repository.DeleteCategory(category);
 
-			if (category is null)
-			{
-				return NotFound();
-			}
-
-			var subCategories = mapper.Map<ICollection<AccountingSubCategory>, ICollection<AccountingSubCategoryDto>>(category.SubCategories);
-
-			return Ok(subCategories);
-		}
-
-		[HttpPost("categories/{categoryId:int}/subcategories")]
-		public async Task<ActionResult<AccountingSubCategoryDto>> AddSubCategory(int categoryId, [FromBody] AccountingSubCategoryDto subCategoryDto)
-		{
-			if (subCategoryDto is null)
-			{
-				return BadRequest();
-			}
-
-			var category = await repository.GetCategoryWithRelatedData(categoryId);
-
-			if (category is null)
-			{
-				return NotFound();
-			}
-
-			var subCategory = mapper.Map<AccountingSubCategoryDto, AccountingSubCategory>(subCategoryDto);
-
-			category.SubCategories.Add(subCategory);
-			await repository.UpdateCategory(category);
-
-			if (subCategory.Id <= 0)
-			{
-				return StatusCode(StatusCodes.Status500InternalServerError);
-			}
-
-			subCategoryDto = mapper.Map<AccountingSubCategory, AccountingSubCategoryDto>(subCategory);
-
-			return CreatedAtAction(
-				nameof(AccountingSubCategoriesController.GetSubCategory),
-				"AccountingSubCategories",
-				new
-				{
-					subCategoryId = subCategory.Id
-				},
-				subCategoryDto);
-		}
-	}
+            return Ok();
+        }
+    }
 }
