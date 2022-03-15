@@ -30,7 +30,7 @@ namespace HomeAPI.Backend.Controllers.Accounting
 
             if (categories is null)
             {
-                return StatusCode(StatusCodes.Status500InternalServerError);
+                return StatusCode(StatusCodes.Status500InternalServerError, "Error reading categories");
             }
 
             if (asTree)
@@ -50,7 +50,7 @@ namespace HomeAPI.Backend.Controllers.Accounting
 
             if (category is null)
             {
-                return NotFound();
+                return NotFound($"Category {id} not found");
             }
 
             var categoryDto = mapper.Map<AccountingCategory, AccountingCategoryDto>(category);
@@ -67,7 +67,7 @@ namespace HomeAPI.Backend.Controllers.Accounting
 
             if (category is null)
             {
-                return BadRequest();
+                return BadRequest("Invalid category data");
             }
 
             if (parentId > 0)
@@ -76,7 +76,7 @@ namespace HomeAPI.Backend.Controllers.Accounting
 
                 if (parentCategory is null)
                 {
-                    return BadRequest();
+                    return BadRequest($"Parent category {parentId} not found");
                 }
 
                 category.ParentCategory = parentCategory;
@@ -86,7 +86,7 @@ namespace HomeAPI.Backend.Controllers.Accounting
 
             if (category.Id <= 0)
             {
-                return StatusCode(StatusCodes.Status500InternalServerError);
+                return StatusCode(StatusCodes.Status500InternalServerError, "Error adding category");
             }
 
             var resultCategoryDto = mapper.Map<AccountingCategory, AccountingCategoryDto>(category);
@@ -99,13 +99,13 @@ namespace HomeAPI.Backend.Controllers.Accounting
         {
             if (categoryDto is null)
             {
-                return BadRequest();
+                return BadRequest("Invalid category data");
             }
 
             var category = await repository.GetCategory(id);
             if (category is null)
             {
-                return NotFound();
+                return NotFound($"Category {id} not found");
             }
 
             category.Update(categoryDto);
@@ -121,10 +121,14 @@ namespace HomeAPI.Backend.Controllers.Accounting
 
             if (category is null)
             {
-                return NotFound();
+                return NotFound($"Category {id} not found");
             }
 
-            // TODO: delete sub categories?!
+            if (category.SubCategories?.Count > 0)
+            {
+                // only allow deleting category if it has no subcategories
+                return BadRequest("Deletion of category with sub-categories not allowed");
+            }
 
             await repository.DeleteCategory(category);
 

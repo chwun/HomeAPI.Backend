@@ -40,14 +40,6 @@ namespace HomeAPI.Backend.Data.Accounting
                 .FirstOrDefaultAsync(x => x.Id == id);
         }
 
-        // public async Task<AccountingCategory> GetCategoryWithRelatedData(int id)
-        // {
-        // 	return await context.AccountingCategories
-        // 		.AsNoTracking()
-        // 		.Include(x => x.SubCategories)
-        // 		.FirstOrDefaultAsync(x => x.Id == id);
-        // }
-
         public async Task AddCategory(AccountingCategory category)
         {
             await context.AccountingCategories.AddAsync(category);
