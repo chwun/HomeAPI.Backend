@@ -8,9 +8,17 @@ namespace HomeAPI.Backend.Models.Accounting
     {
         public int Id { get; set; }
 
-        public DateOnly TimePeriod { get; set; }
+        public DateTime? Timestamp { get; set; }
+
+        public decimal? Value { get; set; }
 
         public int CategoryId { get; set; }
         public AccountingCategory Category { get; set; }
+
+        public void Update(AccountingEntryUpdateDto updateDto)
+        {
+            Timestamp = updateDto.Timestamp;
+            Value = updateDto.Value;
+        }
     }
 }

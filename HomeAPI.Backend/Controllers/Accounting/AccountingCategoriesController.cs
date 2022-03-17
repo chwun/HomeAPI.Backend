@@ -53,9 +53,7 @@ namespace HomeAPI.Backend.Controllers.Accounting
                 return NotFound($"Category {id} not found");
             }
 
-            var categoryDto = mapper.Map<AccountingCategory, AccountingCategoryDto>(category);
-
-            return Ok(categoryDto);
+            return Ok(mapper.Map<AccountingCategory, AccountingCategoryDto>(category));
         }
 
         [HttpPost("categories")]

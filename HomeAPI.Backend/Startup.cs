@@ -63,6 +63,7 @@ namespace HomeAPI.Backend
             services.AddTransient<IRssFeedProvider, RssFeedProvider>();
 
             services.AddScoped<IAccountingCategoriesRepository, AccountingCategoriesRepository>();
+            services.AddScoped<IAccountingEntriesRepository, AccountingEntriesRepository>();
 
             services.Configure<HueOptions>(Configuration.GetSection("HueOptions"));
             services.Configure<OWMOptions>(Configuration.GetSection("OWMOptions"));

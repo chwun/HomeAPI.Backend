@@ -11,13 +11,13 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace HomeAPI.Backend.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20220223193608_Test")]
-    partial class Test
+    [Migration("20220317200043_AddAccounting")]
+    partial class AddAccounting
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
-            modelBuilder.HasAnnotation("ProductVersion", "6.0.2");
+            modelBuilder.HasAnnotation("ProductVersion", "6.0.3");
 
             modelBuilder.Entity("HomeAPI.Backend.Models.Accounting.AccountingCategory", b =>
                 {
@@ -49,7 +49,10 @@ namespace HomeAPI.Backend.Migrations
                     b.Property<int>("CategoryId")
                         .HasColumnType("INTEGER");
 
-                    b.Property<DateOnly>("TimePeriod")
+                    b.Property<DateTime?>("Timestamp")
+                        .HasColumnType("TEXT");
+
+                    b.Property<decimal?>("Value")
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");

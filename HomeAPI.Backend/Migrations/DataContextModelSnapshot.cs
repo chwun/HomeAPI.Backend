@@ -15,7 +15,7 @@ namespace HomeAPI.Backend.Migrations
         protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
-            modelBuilder.HasAnnotation("ProductVersion", "6.0.2");
+            modelBuilder.HasAnnotation("ProductVersion", "6.0.3");
 
             modelBuilder.Entity("HomeAPI.Backend.Models.Accounting.AccountingCategory", b =>
                 {
@@ -47,7 +47,10 @@ namespace HomeAPI.Backend.Migrations
                     b.Property<int>("CategoryId")
                         .HasColumnType("INTEGER");
 
-                    b.Property<DateOnly>("TimePeriod")
+                    b.Property<DateTime?>("Timestamp")
+                        .HasColumnType("TEXT");
+
+                    b.Property<decimal?>("Value")
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");

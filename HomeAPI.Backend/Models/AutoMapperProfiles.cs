@@ -17,6 +17,9 @@ namespace HomeAPI.Backend.Models
             CreateMap<AccountingCategory, AccountingCategoryDto>().ReverseMap();
             CreateMap<AccountingCategory, AccountingCategoryUpdateDto>().ReverseMap();
             CreateMap<AccountingCategory, AccountingCategoryTreeDto>().ReverseMap();
+
+            CreateMap<AccountingEntry, AccountingEntryDto>().ReverseMap();
+            CreateMap<AccountingEntry, AccountingEntryUpdateDto>().ReverseMap();
         }
     }
 }
