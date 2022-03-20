@@ -24,6 +24,8 @@ using HomeAPI.Backend.Models.News;
 using HomeAPI.Backend.Data.News;
 using HomeAPI.Backend.Providers.News;
 using HomeAPI.Backend.Data.Accounting;
+using Microsoft.OpenApi.Models;
+using System.Reflection;
 
 namespace HomeAPI.Backend
 {
@@ -73,6 +75,19 @@ namespace HomeAPI.Backend
             services.AddControllers()
                 .AddNewtonsoftJson();
 
+            services.AddSwaggerGen(options =>
+            {
+                options.SwaggerDoc("v1", new OpenApiInfo
+                {
+                    Version = "v1",
+                    Title = "HomeAPI",
+                    Description = "Backend for home automation"
+                });
+
+                var xmlFilename = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+                options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));
+            });
+
             services.AddCors(options => options.AddPolicy("SPAPolicy", builder => builder.AllowAnyOrigin()));
 
             services.AddHttpClient();
@@ -91,6 +106,9 @@ namespace HomeAPI.Backend
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
+
+                app.UseSwagger();
+                app.UseSwaggerUI();
             }
 
             // app.UseHttpsRedirection();
